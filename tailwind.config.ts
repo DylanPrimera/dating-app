@@ -8,5 +8,5 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 
   ],
-  plugins: [require("tailwindcss-animate")],
+  plugins: [],
 } satisfies Config;
