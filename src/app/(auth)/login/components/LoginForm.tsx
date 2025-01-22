@@ -1,8 +1,10 @@
 "use client";
+import { signInUser } from "@/app/actions";
 import { Button } from "@/components";
 import { Input } from "@/components";
 import { loginSchema, LoginSchema } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
+import clsx from "clsx";
 import Link from "next/link";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -11,6 +13,7 @@ export const LoginForm = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { isValid, errors },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -18,7 +21,20 @@ export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const doLogin: SubmitHandler<LoginSchema> = async (data) => {
-    console.log(data);
+    setIsLoading(true);
+    try {
+      const resp = await signInUser(data);
+      if(resp.status === 'success') {
+        reset();
+      }
+      console.log(resp);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+    
+   
   };
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -38,6 +54,7 @@ export const LoginForm = () => {
               {...register("email", {
                 pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
               })}
+              className={clsx(errors.email && 'focus:ring-rose-500 focus:ring-2')}
             />
 
             {!isValid && errors.email && (
@@ -58,6 +75,8 @@ export const LoginForm = () => {
               placeholder="*****"
               type="password"
               {...register("password")}
+              className={clsx(errors.password && 'focus:ring-rose-500 focus:ring-2')}
+            
             />
             {!isValid && errors.password && (
               <span className="text-red-500 text-sm">

@@ -1,5 +1,6 @@
 "use client";
 
+import { registerUser } from "@/app/actions";
 import { Button, Input } from "@/components";
 import { registerSchema, RegisterSchema } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,15 +11,42 @@ export const RegisterForm = () => {
   const {
     register,
     handleSubmit,
+    setError,
+    reset,
     formState: { isValid, errors },
   } = useForm<RegisterSchema>({
-    resolver: zodResolver(registerSchema),
+    // resolver: zodResolver(registerSchema),
     mode: "onTouched",
   });
   const [isLoading, setIsLoading] = useState(false);
 
   const doRegister: SubmitHandler<RegisterSchema> = async (data) => {
-    console.log(data);
+    setIsLoading(true);
+    try {
+      const resp = await registerUser(data);
+      if (resp.status === "success") {
+        console.log("user register success");
+        reset();
+      } else {
+        if (Array.isArray(resp.error)) {
+          resp.error.forEach((error) => {
+            const filedName = error.path.join(".") as
+              | "email"
+              | "name"
+              | "password";
+            setError(filedName, { message: error.message });
+          });
+        } else {
+          setError("root.serverError", {
+            message: resp.error,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
