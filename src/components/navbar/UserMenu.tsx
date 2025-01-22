@@ -1,0 +1,76 @@
+"use client";
+import { Session } from "next-auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
+import { signOutUser } from "@/app/actions";
+
+interface Props {
+  user: Session["user"];
+}
+
+export const UserMenu: React.FC<Props> = ({ user }) => {
+  const routes = [
+    {
+      label: "Matches",
+      href: "/members",
+    },
+    {
+      label: "Lists",
+      href: "/lists",
+    },
+    {
+      label: "Messages",
+      href: "/messages",
+    },
+  ];
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="outline-none ">
+        <Avatar className="transition-transform" color="default">
+          <AvatarImage
+            src={user?.image ?? "https://github.com/shadcn.png"}
+            className="cursor-pointer"
+            alt="User avatar"
+          />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel className="flex flex-row" aria-label="username">
+          {user?.name}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link href={"/members/edit"} className="w-full">
+            Edit profile
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="hover:bg-red-500/20 hover:cursor-pointer rounded-md group">
+          <form action={signOutUser}>
+            <button
+              type="submit"
+              className="group-hover:text-red-700 group-hover:font-semibold"
+            >
+              Logout
+            </button>
+          </form>
+        </DropdownMenuItem>
+        <div className="block md:hidden">
+          {routes.map((route, index) => (
+            <DropdownMenuItem key={index}>
+              <Link href={route.href}>{route.label}</Link>
+            </DropdownMenuItem>
+          ))}
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

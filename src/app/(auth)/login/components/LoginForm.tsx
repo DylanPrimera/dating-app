@@ -6,8 +6,10 @@ import { loginSchema, LoginSchema } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export const LoginForm = () => {
   const {
@@ -19,6 +21,7 @@ export const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const doLogin: SubmitHandler<LoginSchema> = async (data) => {
     setIsLoading(true);
@@ -26,8 +29,10 @@ export const LoginForm = () => {
       const resp = await signInUser(data);
       if(resp.status === 'success') {
         reset();
+        router.push('/members')
+      } else {
+        toast.error(resp.error as string);
       }
-      console.log(resp);
     } catch (error) {
       console.log(error);
     } finally {

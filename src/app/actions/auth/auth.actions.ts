@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { LoginSchema, registerSchema, RegisterSchema } from "@/lib";
 import prisma from "@/lib/prisma";
 import { ActionResult } from "@/types";
@@ -11,7 +11,16 @@ export const signInUser = async (
   data: LoginSchema
 ): Promise<ActionResult<string>> => {
   try {
-     await signIn("credentials", { ...data, redirect: false });
+    const userExists = await prisma.user.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (!userExists) {
+      return { status: "error", error: "User doesn't exists" };
+    }
+    await signIn("credentials", { ...data, redirect: false });
 
     return { status: "success", data: "Logged in" };
   } catch (error) {
@@ -27,6 +36,10 @@ export const signInUser = async (
       return { status: "error", error: "Something went wrong" };
     }
   }
+};
+
+export const signOutUser = async () => {
+  await signOut({ redirectTo: "/login" });
 };
 
 export const registerUser = async (

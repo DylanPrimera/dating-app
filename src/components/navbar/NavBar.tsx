@@ -2,8 +2,11 @@ import { GiSelfLove } from "react-icons/gi";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { NavItem } from "./NavItem";
+import { auth } from "@/auth";
+import { UserMenu } from "./UserMenu";
 
-export const NavBar = () => {
+export const NavBar = async () => {
+  const session = await auth();
   const routes = [
     {
       label: "Matches",
@@ -30,21 +33,24 @@ export const NavBar = () => {
 
         <div className="hidden md:flex md:items-center md:gap-4">
           {routes.map((route, index) => (
-            <NavItem key={index} {...route}/>
+            <NavItem key={index} {...route} />
           ))}
         </div>
-        <div className="flex items-center gap-4">
-          <Link href={"/login"}>
-            <Button variant="outline" className="text-black">
-              Login
-            </Button>
-          </Link>
-          <Link href={"/register"}>
-            <Button variant="outline" className="text-black">
-              Register
-            </Button>
-          </Link>
-        </div>
+        {session?.user && <UserMenu user={session.user} />}
+        {!session?.user && (
+          <div className="flex items-center gap-4">
+            <Link href={"/login"}>
+              <Button variant="outline" className="text-black">
+                Login
+              </Button>
+            </Link>
+            <Link href={"/register"}>
+              <Button variant="outline" className="text-black">
+                Register
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );
