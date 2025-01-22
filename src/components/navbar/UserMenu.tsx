@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { signOutUser } from "@/app/actions";
+import { signOutUser } from "@/actions";
 
 interface Props {
   user: Session["user"];

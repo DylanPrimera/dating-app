@@ -1,5 +1,5 @@
 "use client";
-import { signInUser } from "@/app/actions";
+import { signInUser } from "@/actions";
 import { Button } from "@/components";
 import { Input } from "@/components";
 import { loginSchema, LoginSchema } from "@/lib";
@@ -29,7 +29,8 @@ export const LoginForm = () => {
       const resp = await signInUser(data);
       if(resp.status === 'success') {
         reset();
-        router.push('/members')
+        router.push('/members');
+        router.refresh();
       } else {
         toast.error(resp.error as string);
       }

@@ -1,6 +1,6 @@
 "use client";
 
-import { registerUser } from "@/app/actions";
+import { registerUser } from "@/actions";
 import { Button, Input } from "@/components";
 import { registerSchema, RegisterSchema } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";

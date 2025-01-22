@@ -1,8 +1,14 @@
+import { getMembers } from "@/actions";
 
-export default function MembersPage() {
+export default async function MembersPage() {
+  const members = await getMembers();
   return (
     <div>
-      <h1>Members Page</h1>
+      {members?.map((member) => (
+        <div key={member.id}>
+          <p>{member.name}</p>
+        </div>
+      ))}
     </div>
   );
 }
