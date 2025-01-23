@@ -22,7 +22,7 @@ export const NavBar = async () => {
     },
   ];
   return (
-    <nav className="w-full py-2 px-6 bg-gradient-to-r from-pink-400 via-red-400 to-pink-600 ">
+    <nav className="w-full py-2 px-6 bg-gradient-to-r from-pink-400 via-red-400 to-pink-600">
       <div className="flex justify-between items-center 2xl:w-[1350px] 2xl:mx-auto text-white ">
         <div>
           <Link href={"/"} className="flex items-center gap-1">
