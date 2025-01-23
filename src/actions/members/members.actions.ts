@@ -27,6 +27,7 @@ export const getMemberById = async (id: string) => {
   const session = await auth();
   if (!session?.user) return null;
   try {
+
     const member = await prisma.member.findUnique({
       where: {
         userId: id,

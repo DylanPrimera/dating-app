@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn, signOut } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 import { LoginSchema, registerSchema, RegisterSchema } from "@/lib";
 import prisma from "@/lib/prisma";
 import { ActionResult } from "@/types";
@@ -78,3 +78,11 @@ export const registerUser = async (
     return { status: "error", error: "Something went wrong" };
   }
 };
+
+export const getAuthUserId = async() => {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if(!userId) throw new Error("User not authenticated");
+
+  return userId;
+}
