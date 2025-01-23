@@ -54,14 +54,13 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="hover:bg-red-500/20 hover:cursor-pointer rounded-md group">
-          <form action={signOutUser}>
-            <button
-              type="submit"
-              className="group-hover:text-red-700 group-hover:font-semibold"
-            >
-              Logout
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={() => signOutUser()}
+            className="group-hover:text-red-700 group-hover:font-semibold"
+          >
+            Logout
+          </button>
         </DropdownMenuItem>
         <div className="block md:hidden">
           {routes.map((route, index) => (
