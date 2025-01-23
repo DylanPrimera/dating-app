@@ -8,7 +8,6 @@ export const toggleLikeMember = async (
 ) => {
   try {
     const userId = await getAuthUserId();
-    console.log(isLiked);
     if (isLiked) {
       await prisma.like.delete({
         where: {
@@ -18,6 +17,7 @@ export const toggleLikeMember = async (
           },
         },
       });
+      return;
     }
     await prisma.like.create({
       data: {
@@ -52,7 +52,6 @@ export const getCurrentUserLikeIds = async () => {
 
 export const getLikedMembers = async (type = "source") => {
   try {
-    console.log(type);
     const userId = await getAuthUserId();
     switch (type) {
       case "source":
