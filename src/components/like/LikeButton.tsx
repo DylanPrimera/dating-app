@@ -4,7 +4,6 @@ import { toggleLikeMember } from "@/actions";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { toast } from "sonner";
 
 interface Props {
   targetId: string;
@@ -14,9 +13,7 @@ export const LikeButton: React.FC<Props> = ({ targetId, hasLiked }) => {
   const router = useRouter();
 
   const toggleLike = async () => {
-    const { status } = await toggleLikeMember(targetId as string, hasLiked);
-    toast.success(status);
-
+    await toggleLikeMember(targetId as string, hasLiked);
     router.refresh();
   };
 

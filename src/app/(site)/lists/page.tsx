@@ -1,8 +1,17 @@
+import { getCurrentUserLikeIds, getLikedMembers } from "@/actions";
+import { ListsTab } from "./components/ListsTab";
 
-export default function ListPage() {
+interface Props {
+  searchParams: Promise<{ type?: string }>;
+}
+
+export default async function ListPage({ searchParams }: Props) {
+  const { type } = await searchParams;
+  const likeIds = await getCurrentUserLikeIds();
+  const members = await getLikedMembers(type);
   return (
     <div>
-      <h1>Hello Page</h1>
+      <ListsTab members={members} likeIds={likeIds} />
     </div>
   );
 }

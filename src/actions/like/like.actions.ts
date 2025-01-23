@@ -18,7 +18,6 @@ export const toggleLikeMember = async (
           },
         },
       });
-      return {status: 'disliked'};
     }
     await prisma.like.create({
       data: {
@@ -26,7 +25,7 @@ export const toggleLikeMember = async (
         targetUserId,
       },
     });
-    return {status: 'liked'};
+
   } catch (error) {
     console.log(error);
     throw error;
@@ -53,6 +52,7 @@ export const getCurrentUserLikeIds = async () => {
 
 export const getLikedMembers = async (type = "source") => {
   try {
+    console.log(type);
     const userId = await getAuthUserId();
     switch (type) {
       case "source":

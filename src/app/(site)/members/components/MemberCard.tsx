@@ -35,7 +35,7 @@ export const MemberCard: React.FC<Props> = ({ member, likeIds }) => {
           {calculateAge(member.dateOfBirth)}
         </p>
       </div>
-      <div className="p-6 pt-0">footer</div>
+
     </div>
   );
 };
