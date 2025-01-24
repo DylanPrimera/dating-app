@@ -2,8 +2,7 @@
 
 import { registerUser } from "@/actions";
 import { Button, Input } from "@/components";
-import { registerSchema, RegisterSchema } from "@/lib";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { handleFormServerErrors, RegisterSchema } from "@/lib";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -28,19 +27,7 @@ export const RegisterForm = () => {
         console.log("user register success");
         reset();
       } else {
-        if (Array.isArray(resp.error)) {
-          resp.error.forEach((error) => {
-            const filedName = error.path.join(".") as
-              | "email"
-              | "name"
-              | "password";
-            setError(filedName, { message: error.message });
-          });
-        } else {
-          setError("root.serverError", {
-            message: resp.error,
-          });
-        }
+        handleFormServerErrors(resp, setError);
       }
     } catch (error) {
       console.log(error);

@@ -3,7 +3,7 @@ export {
   getMemberById,
   getMemberPhotos,
 } from "./members/members.actions";
-export { getUserByEmail } from "./user/user.actions";
+export { getUserByEmail, updateMemberProfile } from "./user/user.actions";
 export {
   signInUser,
   signOutUser,

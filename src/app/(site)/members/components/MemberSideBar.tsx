@@ -6,32 +6,20 @@ import { calculateAge, cn } from "@/lib/utils";
 import { Member } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface Props {
   member: Member;
+  navLinks?: {
+    name: string;
+    href: string;
+  }[];
 }
 
-export const MemberSideBar: React.FC<Props> = ({ member }) => {
+export const MemberSideBar: React.FC<Props> = ({ member, navLinks }) => {
   const pathName = usePathname();
-  const basePath = `/members/${member.userId}`;
-  const navLinks = [
-    {
-      name: "Profile",
-      href: `${basePath}`,
-      active: pathName === `${basePath}`,
-    },
-    {
-      name: "Photos",
-      href: `${basePath}/photos`,
-      active: pathName === `${basePath}/photos`,
-    },
-    {
-      name: "Chat",
-      href: `${basePath}/chat`,
-      active: pathName === `${basePath}/chat`,
-    },
-  ];
+  const router = useRouter();
+
   return (
     <Card className="flex flex-col w-full my-10 h-full">
       <CardContent className="flex-1">
@@ -60,7 +48,7 @@ export const MemberSideBar: React.FC<Props> = ({ member }) => {
               key={link.name}
               className={cn(
                 "block rounded hover:text-red-400 transition",
-                link.active && "text-red-400"
+                pathName === link.href && "text-red-400"
               )}
             >
               <p>{link.name}</p>
@@ -69,7 +57,9 @@ export const MemberSideBar: React.FC<Props> = ({ member }) => {
         </nav>
       </CardContent>
       <CardFooter>
-        <Button className="w-full bg-gradient-to-r from-pink-400 via-red-400 to-pink-600">Go back</Button>
+        <Button className="w-full" onClick={()=> router.back()}>
+          Go back
+        </Button>
       </CardFooter>
     </Card>
   );

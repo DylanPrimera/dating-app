@@ -8,3 +8,6 @@ body,
   height: 100%;
 }
 
+body[data-scroll-locked] {
+  margin-right: 0px !important;
+}

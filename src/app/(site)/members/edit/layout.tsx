@@ -1,38 +1,29 @@
-import { getMemberById } from "@/actions";
+import { getAuthUserId, getMemberById } from "@/actions";
 import { MemberSideBar } from "../components/MemberSideBar";
 import { Card } from "@/components/ui/card";
 
-export default async function MemberDetailLayout({
+export default async function EditMemberLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ userId: string }>;
 }) {
-  const { userId } = await params;
-  const memberData = await getMemberById(userId);
-  const basePath = `/members/${memberData?.userId}`;
+  const userId = await getAuthUserId();
+  const member = await getMemberById(userId);
+  const basePath = `/members/edit`;
   const navLinks = [
     {
-      name: "Profile",
+      name: "Edit Profile",
       href: `${basePath}`,
-
     },
     {
       name: "Photos",
       href: `${basePath}/photos`,
-   
-    },
-    {
-      name: "Chat",
-      href: `${basePath}/chat`,
-
     },
   ];
   return (
     <div className="grid grid-cols-12 gap-5 h-[80vh]">
       <div className="col-span-3">
-        <MemberSideBar member={memberData!} navLinks={navLinks}/>
+        <MemberSideBar member={member!} navLinks={navLinks}/>
       </div>
       <div className="col-span-9">
         <Card className="w-full mt-10 h-full">{children}</Card>
