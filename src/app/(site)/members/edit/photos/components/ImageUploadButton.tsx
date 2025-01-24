@@ -13,11 +13,10 @@ export const ImageUploadButton: React.FC<Props> = ({onUploadImage}) => {
     <CldUploadButton
     options={{maxFiles: 1}}
     onSuccess={onUploadImage}
-    signatureEndpoint="/api/sign-image"
     uploadPreset='neinter'
-    className={`flex items-center gap-2 border-2 border-default text-default rounded-lg py-2 px-4 hover:bg-default/10`}
+    className={`flex items-center gap-2 border-2 border-gray-400 text-gray-400 rounded-lg py-1 px-3 hover:bg-default/10`}
     >
-    <HiPhoto size={28}/>
+    <HiPhoto size={25}/>
         Upload new image
     </CldUploadButton>
   )

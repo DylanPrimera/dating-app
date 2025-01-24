@@ -3,7 +3,7 @@ export {
   getMemberById,
   getMemberPhotos,
 } from "./members/members.actions";
-export { getUserByEmail, updateMemberProfile } from "./user/user.actions";
+export { getUserByEmail,getUserInfoForNav, updateMemberProfile, addImage, setMainImage, deleteImage } from "./user/user.actions";
 export {
   signInUser,
   signOutUser,
@@ -18,3 +18,5 @@ export {
 } from "./like/like.actions";
 
 export {getUnapprovedPhotos, approvePhoto,rejectPhoto} from './admin/admin.actions';
+
+export {deleteImageFromCloudinary} from './cloudinary/cloudinary.actions';

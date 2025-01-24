@@ -1,5 +1,4 @@
 "use client";
-import { Session } from "next-auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +10,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { signOutUser } from "@/actions";
+import { getInitials } from "@/lib";
 
 interface Props {
-  user: Session["user"];
+  user: {
+    name?: string | null;
+    image?: string | null;
+  } | null;
 }
 
 export const UserMenu: React.FC<Props> = ({ user }) => {
@@ -37,10 +40,12 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
         <Avatar className="transition-transform" color="default">
           <AvatarImage
             src={user?.image ?? "https://github.com/shadcn.png"}
-            className="cursor-pointer"
+            className="cursor-pointer object-cover"
+            width={300}
+            
             alt="User avatar"
           />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback className="text-black">{getInitials(user?.name?? '')}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

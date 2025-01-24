@@ -41,7 +41,6 @@ export const MemberImage: React.FC<Props> = ({ photo }) => {
       toast.error(error.message);
     }
   };
-
   return (
     <div>
       {photo?.publicId ? (
@@ -59,7 +58,7 @@ export const MemberImage: React.FC<Props> = ({ photo }) => {
         />
       ) : (
         <Image
-          src={photo?.url || "/images/user.png"}
+          src={photo?.url}
           alt="Image of user"
           width={300}
           height={300}

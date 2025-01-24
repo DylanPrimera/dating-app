@@ -4,10 +4,12 @@ import { Button } from "../ui/button";
 import { NavItem } from "./NavItem";
 import { auth } from "@/auth";
 import { UserMenu } from "./UserMenu";
+import { getUserInfoForNav } from "@/actions";
 
 
 export const NavBar = async () => {
   const session = await auth();
+  const userInfo = session?.user && (await getUserInfoForNav())
   const routes = [
     {
       label: "Matches",
@@ -37,8 +39,8 @@ export const NavBar = async () => {
             <NavItem key={index} {...route} />
           ))}
         </div>
-        {session?.user && <UserMenu user={session.user} />}
-        {!session?.user && (
+        {userInfo && <UserMenu user={userInfo} />}
+        {!userInfo && (
           <div className="flex items-center gap-4">
             <Link href={"/login"}>
               <Button variant="outline" className="text-black">

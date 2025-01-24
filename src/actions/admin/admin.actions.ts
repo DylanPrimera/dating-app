@@ -3,7 +3,6 @@
 import prisma from "@/lib/prisma";
 import { getUserRole } from "..";
 import { Photo } from "@prisma/client";
-import { cloudinaryConfig } from "@/lib/cloudinary";
 
 
 export const getUnapprovedPhotos = async () => {
@@ -75,7 +74,7 @@ export const rejectPhoto=async(photo: Photo)=> {
         if (role !== 'ADMIN') throw new Error('Forbidden');
 
         if (photo.publicId) {
-            await cloudinaryConfig.uploader.destroy(photo.publicId);
+          console.log(photo.publicId);
         }
 
         return prisma.photo.delete({

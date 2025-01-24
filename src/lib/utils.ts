@@ -25,3 +25,10 @@ export function handleFormServerErrors<TFieldValues extends FieldValues>(
     setError("root", { message: errorResponse.error });
   }
 }
+
+export function getInitials(fullName: string): string {
+  return fullName
+    .split(" ")
+    .map((name) => name[0].toUpperCase())
+    .join("");
+}
