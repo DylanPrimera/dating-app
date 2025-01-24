@@ -5,6 +5,7 @@ import { NavItem } from "./NavItem";
 import { auth } from "@/auth";
 import { UserMenu } from "./UserMenu";
 
+
 export const NavBar = async () => {
   const session = await auth();
   const routes = [

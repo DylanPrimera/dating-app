@@ -32,7 +32,7 @@ export const MemberSideBar: React.FC<Props> = ({ member, navLinks }) => {
             className="rounded-full mt-6 aspect-square object-cover"
           />
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-4">
           <p className="text-xl">
             {member.name}, {calculateAge(member.dateOfBirth)}
           </p>

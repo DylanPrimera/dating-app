@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { ActionResult } from "@/types";
 import { Member } from "@prisma/client";
 import { getAuthUserId } from "../auth/auth.actions";
+import { revalidatePath } from "next/cache";
 
 export const getUserByEmail = async (email: string) => {
   const user = await prisma.user.findUnique({
@@ -37,6 +38,7 @@ export const updateMemberProfile = async (
           name,
         },
       });
+     
     }
 
     const member = await prisma.member.update({
@@ -50,6 +52,8 @@ export const updateMemberProfile = async (
         country,
       },
     });
+    revalidatePath('/');
+    revalidatePath('/members/edit');
     return { status: "success", data: member };
   } catch (error) {
     console.log(error);

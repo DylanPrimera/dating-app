@@ -6,7 +6,6 @@ import { loginSchema } from "./lib";
 import brcyptjs from "bcryptjs";
 import { getUserByEmail } from "./actions";
 
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -34,14 +33,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token }) {
+    async jwt({ token, trigger, session }) {
+      if (trigger === "update" && session?.name) {
+        token.name = session.name;
+      }
       return token;
     },
     async session({ session, token }) {
       if (token.sub && session.user) {
         session.user.id = token.sub as string;
       }
-
       return session;
     },
   },
