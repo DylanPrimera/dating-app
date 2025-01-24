@@ -9,9 +9,12 @@ export {
   signOutUser,
   registerUser,
   getAuthUserId,
+  getUserRole
 } from "./auth/auth.actions";
 export {
   toggleLikeMember,
   getLikedMembers,
   getCurrentUserLikeIds,
 } from "./like/like.actions";
+
+export {getUnapprovedPhotos, approvePhoto,rejectPhoto} from './admin/admin.actions';

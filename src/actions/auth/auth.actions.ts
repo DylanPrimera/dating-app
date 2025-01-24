@@ -79,10 +79,20 @@ export const registerUser = async (
   }
 };
 
-export const getAuthUserId = async() => {
+export const getAuthUserId = async () => {
   const session = await auth();
   const userId = session?.user?.id;
-  if(!userId) throw new Error("User not authenticated");
+  if (!userId) throw new Error("User not authenticated");
 
   return userId;
-}
+};
+
+export const getUserRole = async () => {
+  const session = await auth();
+
+  const role = session?.user.role;
+
+  if (!role) throw new Error("Not in role");
+
+  return role;
+};
