@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn, getInitials } from "@/lib";
 import { MessageDto } from "@/types";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface Props {
   message: MessageDto;
@@ -12,9 +12,19 @@ interface Props {
   lastMessage: boolean;
 }
 
-export const MessageBox: React.FC<Props> = ({ message, currentUserId, lastMessage }) => {
+export const MessageBox: React.FC<Props> = ({
+  message,
+  currentUserId,
+  lastMessage,
+}) => {
   const isCurrentUserSender = message.senderId === currentUserId;
   const messageEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messageEndRef]);
 
   const renderAvatar = () => (
     <Avatar>
@@ -32,8 +42,10 @@ export const MessageBox: React.FC<Props> = ({ message, currentUserId, lastMessag
   const messageContentClasses = cn(
     "flex flex-col leading-1.5 p-4  dark:bg-gray-700",
     {
-      "rounded-b-xl rounded-tl-xl border-blue-100 bg-blue-100": isCurrentUserSender,
-      "rounded-e-xl rounded-es-xl bg-green-100 border-green-100": !isCurrentUserSender,
+      "rounded-b-xl rounded-tl-xl border-blue-100 bg-blue-100":
+        isCurrentUserSender,
+      "rounded-e-xl rounded-es-xl bg-green-100 border-green-100":
+        !isCurrentUserSender,
     }
   );
 
@@ -45,7 +57,8 @@ export const MessageBox: React.FC<Props> = ({ message, currentUserId, lastMessag
           {message.text}
         </p>
       </div>
-      {lastMessage && message.dateRead &&
+      {lastMessage &&
+      message.dateRead &&
       message.recipientId !== currentUserId ? (
         <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
           (Read )
@@ -56,7 +69,11 @@ export const MessageBox: React.FC<Props> = ({ message, currentUserId, lastMessag
     </div>
   );
   const renderMessageHeader = () => (
-    <div className={cn("flex items-center space-x-2 rtl:space-x-reverse", {'justify-end':isCurrentUserSender})}>
+    <div
+      className={cn("flex items-center space-x-2 rtl:space-x-reverse", {
+        "justify-end": isCurrentUserSender,
+      })}
+    >
       <span className="text-sm font-semibold text-gray-900 dark:text-white">
         {message.senderName}
       </span>
