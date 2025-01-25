@@ -1,5 +1,5 @@
 import { getMemberById } from "@/actions";
-import { CardContent, CardHeader } from "@/components/ui/card";
+import { CardInnerWrapper } from "@/components";
 import { notFound } from "next/navigation";
 
 interface Props {
@@ -12,16 +12,6 @@ export default async function MemberDeailPage({ params }: Props) {
     notFound();
   }
   const memberData = await getMemberById(userId);
-  if(!memberData) return notFound();
-  return (
-    <>
-      <CardHeader className="text-xl font-semibold text-red-400">
-        Profile
-      </CardHeader>
-      <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
-      <CardContent className="mt-2">
-        {memberData.description}
-      </CardContent>
-    </>
-  );
+  if (!memberData) return notFound();
+  return <CardInnerWrapper header="Profile" body={memberData.description} />;
 }

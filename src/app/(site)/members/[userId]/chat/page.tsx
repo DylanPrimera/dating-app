@@ -1,8 +1,7 @@
+import { CardInnerWrapper } from "@/components";
 
 export default function ChatPage() {
   return (
-    <div>
-      <h1>Hello Page</h1>
-    </div>
+   <CardInnerWrapper header='Chat' body='Chat goes here'/>
   );
 }
