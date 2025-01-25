@@ -31,11 +31,11 @@ export default async function MemberDetailLayout({
   ];
   return (
     <div className="grid grid-cols-12 gap-5 h-[80vh]">
-      <div className="col-span-3">
+      <div className="col-span-12 md:col-span-3">
         <MemberSideBar member={memberData!} navLinks={navLinks}/>
       </div>
-      <div className="col-span-9">
-        <Card className="w-full mt-10 h-full">{children}</Card>
+      <div className="col-span-12 md:col-span-9">
+        <Card className="w-full mt-10 flex flex-col h-full">{children}</Card>
       </div>
     </div>
   );

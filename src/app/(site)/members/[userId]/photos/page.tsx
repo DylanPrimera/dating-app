@@ -14,15 +14,15 @@ export default async function PhotosPage({ params }: Props) {
       header="Member Photos"
       body={
         <>
-          <div className="grid grid-cols-1 items-center md:grid-cols-4 lg:grid-cols-5 p-5">
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-4 lg:grid-cols-5 p-5">
             {memberPhotos?.map((photo) => (
               <Image
                 key={photo.id}
-                width={120}
-                height={120}
                 src={photo.url}
+                width={200}
+                height={200}
                 alt="User photo"
-                className=" object-cover rounded-full"
+                className="h-full object-cover rounded-2xl"
               />
             ))}
           </div>

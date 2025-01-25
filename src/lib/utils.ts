@@ -1,8 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { differenceInYears } from "date-fns";
+import { differenceInYears, format } from "date-fns";
 import { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { ZodIssue } from "zod";
+import { MessageWithSenderRecipient } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -31,4 +32,31 @@ export function getInitials(fullName: string): string {
     .split(" ")
     .map((name) => name[0].toUpperCase())
     .join("");
+}
+function formatShorDateTime(date: Date) {
+  if (date.getDate() === new Date().getDate()) {
+    return format(date, "h:mm:a");
+  }
+  if (date.getDate() === new Date().getDate() - 1) {
+    return "Yesterday " + format(date, "h:mm:a");
+  }
+
+  if (date.getDate() < new Date().getDate() - 1) {
+    return format(date, "dd/MM/yy, h:mm:a");
+  }
+}
+
+export function mapMessageToMessageDto(message: MessageWithSenderRecipient) {
+  return {
+    id: message.id,
+    text: message.text,
+    created: formatShorDateTime(message.created),
+    dateRead: message.dateRead ? formatShorDateTime(message.dateRead) : null,
+    senderId: message.sender?.userId,
+    senderName: message.sender?.name,
+    senderImage: message.sender?.image,
+    recipientId: message.recipient?.userId,
+    recipientName: message.recipient?.name,
+    recipientImage: message.recipient?.image,
+  };
 }

@@ -21,7 +21,7 @@ export const CardInnerWrapper: React.FC<Props> = ({ header, body, footer }) => {
         }
       </CardHeader>
       <hr className="border-1 border-gray-300" />
-      <CardContent className="mt-4">
+      <CardContent className="mt-4 flex-1">
         {body}
       </CardContent>
       {footer && (
