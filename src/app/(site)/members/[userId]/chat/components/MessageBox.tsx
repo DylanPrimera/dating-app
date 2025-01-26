@@ -30,8 +30,8 @@ export const MessageBox: React.FC<Props> = ({
     <Avatar>
       <AvatarImage
         src={message.senderImage ?? "https://github.com/shadcn.png"}
+        className="w-full"
         alt="User avatar"
-        className="w-full object-cover"
       />
       <AvatarFallback className="text-black">
         {getInitials(message.senderName ?? "")}

@@ -36,13 +36,12 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
   ];
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none ">
-        <Avatar className="transition-transform" color="default">
+      <DropdownMenuTrigger >
+        <Avatar>
           <AvatarImage
             src={user?.image ?? "https://github.com/shadcn.png"}
-            className="cursor-pointer object-cover"
-            width={300}
-            
+           
+
             alt="User avatar"
           />
           <AvatarFallback className="text-black">{getInitials(user?.name?? '')}</AvatarFallback>
