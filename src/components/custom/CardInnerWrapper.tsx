@@ -21,11 +21,11 @@ export const CardInnerWrapper: React.FC<Props> = ({ header, body, footer }) => {
         }
       </CardHeader>
       <hr className="border-1 border-gray-300" />
-      <CardContent className="mt-4 flex-1">
+      <CardContent className="flex-1 max-h-[60vh] overflow-y-scroll">
         {body}
       </CardContent>
       {footer && (
-        <CardFooter>
+        <CardFooter className="mt-3">
             {footer}
         </CardFooter>
       )}

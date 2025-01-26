@@ -48,7 +48,7 @@ export const MessageList: React.FC<Props> = ({
   }, [chatId, handleNewMessages, handleReadMessages]);
 
   return (
-    <div>
+    <div className="h-full">
       {messages.length === 0 && "No messages to display"}
       {messages.length > 0 && (
         <>
