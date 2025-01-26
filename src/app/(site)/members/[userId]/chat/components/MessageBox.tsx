@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { cn, getInitials } from "@/lib";
+import { cn, formatMessageTime, getInitials, timeAgo } from "@/lib";
 import { MessageDto } from "@/types";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { useEffect, useRef } from "react";
@@ -61,7 +61,7 @@ export const MessageBox: React.FC<Props> = ({
       message.dateRead &&
       message.recipientId !== currentUserId ? (
         <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-          (Read )
+          Read {timeAgo(message.dateRead)}
         </span>
       ) : (
         <div></div>
@@ -78,14 +78,15 @@ export const MessageBox: React.FC<Props> = ({
         {message.senderName}
       </span>
       <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-        {message.created}
+        {formatMessageTime(message.created!)}
       </span>
     </div>
   );
 
+
   return (
     <div
-      className={cn("flex items-start gap-2.5", {
+      className={cn("flex items-start gap-2.5 my-4", {
         "justify-end text-right": isCurrentUserSender,
       })}
     >

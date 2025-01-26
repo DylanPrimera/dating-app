@@ -6,7 +6,12 @@ import React, { useState } from "react";
 import { GoInbox } from "react-icons/go";
 import { MdOutlineOutbox } from "react-icons/md";
 
-export const MessagesSidebar = () => {
+interface Props {
+    messagesCount: number;
+}
+
+
+export const MessagesSidebar:React.FC<Props> = ({messagesCount}) => {
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const router = useRouter();
@@ -40,9 +45,9 @@ export const MessagesSidebar = () => {
     <div className="flex flex-col shadow-md rounded-lg cursor-pointer">
       {items.map(({ key, icon: Icon, label, chip }) => (
         <div
-          className={cn("flex flex-row items-center rounded-t-lg gap-2 p-3", {
+          className={cn("flex flex-row items-center rounded-t-lg gap-2 p-3 transition", {
             "text-black": selected === key,
-            'text-gray-600 hover:text-black': selected !== key
+            'text-gray-400 hover:text-black': selected !== key
 
           })}
           key={key}
@@ -51,7 +56,7 @@ export const MessagesSidebar = () => {
             <Icon size={24}/>
             <div className="flex justify-between flex-grow">
                 <span>{label}</span>
-                {chip && <Badge>2</Badge>}
+                {chip && <Badge>{messagesCount}</Badge>}
             </div>
         </div>
       ))}

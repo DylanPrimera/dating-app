@@ -1,8 +1,7 @@
 "use client";
 
 import { createMessage } from "@/actions";
-import { Button } from "@/components";
-import { Textarea } from "@/components/ui/textarea";
+import { Button, Input } from "@/components";
 import { cn, handleFormServerErrors } from "@/lib";
 import { messageSchema, MessageSchema } from "@/lib/schemas/MessageSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,8 +36,9 @@ export const ChatForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex items-center gap-2">
-        <Textarea
+        <Input
           id="text"
+          type='text'
           placeholder="Type a message..."
           {...register("text")}
           className={cn(

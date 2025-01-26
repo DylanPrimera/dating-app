@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { differenceInYears, format } from "date-fns";
+import { differenceInYears, format, formatDistance } from "date-fns";
 import { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { ZodIssue } from "zod";
 import { MessageWithSenderRecipient } from "@/types";
@@ -33,25 +33,36 @@ export function getInitials(fullName: string): string {
     .map((name) => name[0].toUpperCase())
     .join("");
 }
-function formatShorDateTime(date: Date) {
-  if (date.getDate() === new Date().getDate()) {
-    return format(date, "h:mm:a");
+
+export function formatMessageTime(date: string) {
+  const dateToCompare = new Date(date);
+  if (dateToCompare.getDate() === new Date().getDate()) {
+    return format(dateToCompare, "h:mm:a");
   }
-  if (date.getDate() === new Date().getDate() - 1) {
-    return "Yesterday " + format(date, "h:mm:a");
+  if (dateToCompare.getDate() === new Date().getDate() - 1) {
+    return "Yesterday " + format(dateToCompare, "h:mm:a");
   }
 
-  if (date.getDate() < new Date().getDate() - 1) {
-    return format(date, "dd/MM/yy, h:mm:a");
+  if (dateToCompare.getDate() < new Date().getDate() - 1) {
+    return format(dateToCompare, "dd/MM/yy, h:mm:a");
   }
+}
+
+export function formatDate(date: Date) {
+  return format(date,'dd MMM yy h:mm:a');
+}
+
+
+export function timeAgo(date: string) {
+  return formatDistance(new Date(date), new Date()) + ' ago';
 }
 
 export function mapMessageToMessageDto(message: MessageWithSenderRecipient) {
   return {
     id: message.id,
     text: message.text,
-    created: formatShorDateTime(message.created),
-    dateRead: message.dateRead ? formatShorDateTime(message.dateRead) : null,
+    created: formatDate(message.created),
+    dateRead: message.dateRead ? formatDate(message.dateRead) : null,
     senderId: message.sender?.userId,
     senderName: message.sender?.name,
     senderImage: message.sender?.image,
@@ -68,4 +79,8 @@ export function truncateString(text?: string | null, num = 50) {
   }
 
   return text.slice(0, num) + '...';
+}
+
+export function createChatId(a: string, b:string) {
+  return a > b ? `${b}-${a}` : `${a}-${b}`;
 }
