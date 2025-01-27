@@ -12,11 +12,11 @@ export const NavBar = async () => {
   const userInfo = session?.user && (await getUserInfoForNav())
   const routes = [
     {
-      label: "Matches",
+      label: "Members",
       href: "/members",
     },
     {
-      label: "Lists",
+      label: "Matches",
       href: "/lists",
     },
     {

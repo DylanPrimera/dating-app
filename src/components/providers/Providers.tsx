@@ -1,3 +1,6 @@
+'use client';
+
+import { usePresenceChannel } from "@/hooks";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
 interface Props {
@@ -5,6 +8,8 @@ interface Props {
 }
 
 export const Providers: React.FC<Props> = ({ children }) => {
+
+  usePresenceChannel();
   return (
     <>
       <Toaster position="top-right" />

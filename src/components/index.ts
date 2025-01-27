@@ -6,3 +6,4 @@ export * from './providers/Providers';
 export * from './ui/button'
 export * from './ui/input';
 export * from './custom/CardInnerWrapper';
+export * from './custom/OnlineDot';

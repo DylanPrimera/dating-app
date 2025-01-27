@@ -22,11 +22,11 @@ interface Props {
 export const UserMenu: React.FC<Props> = ({ user }) => {
   const routes = [
     {
-      label: "Matches",
+      label: "Members",
       href: "/members",
     },
     {
-      label: "Lists",
+      label: "Matches",
       href: "/lists",
     },
     {
@@ -36,15 +36,15 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
   ];
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger >
+      <DropdownMenuTrigger>
         <Avatar>
           <AvatarImage
             src={user?.image ?? "https://github.com/shadcn.png"}
-           
-
             alt="User avatar"
           />
-          <AvatarFallback className="text-black">{getInitials(user?.name?? '')}</AvatarFallback>
+          <AvatarFallback className="text-black">
+            {getInitials(user?.name ?? "")}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -57,6 +57,13 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
             Edit profile
           </Link>
         </DropdownMenuItem>
+        <div className="block md:hidden">
+          {routes.map((route, index) => (
+            <DropdownMenuItem key={index}>
+              <Link href={route.href}>{route.label}</Link>
+            </DropdownMenuItem>
+          ))}
+        </div>
         <DropdownMenuItem className="hover:bg-red-500/20 hover:cursor-pointer rounded-md group">
           <button
             type="button"
@@ -66,13 +73,6 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
             Logout
           </button>
         </DropdownMenuItem>
-        <div className="block md:hidden">
-          {routes.map((route, index) => (
-            <DropdownMenuItem key={index}>
-              <Link href={route.href}>{route.label}</Link>
-            </DropdownMenuItem>
-          ))}
-        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

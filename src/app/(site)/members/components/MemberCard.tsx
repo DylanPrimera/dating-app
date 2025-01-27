@@ -1,5 +1,5 @@
 "use client";
-import { LikeButton } from "@/components";
+import { LikeButton, OnlineDot } from "@/components";
 import { calculateAge } from "@/lib/utils";
 import { Member } from "@prisma/client";
 import Image from "next/image";
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const MemberCard: React.FC<Props> = ({ member, likeIds }) => {
-  const hasLiked= likeIds.includes(member.userId);
+  const hasLiked = likeIds.includes(member.userId);
 
   return (
     <div className="rounded-lg overflow-hidden fade-in shadow-lg p-5 relative">
@@ -25,17 +25,20 @@ export const MemberCard: React.FC<Props> = ({ member, likeIds }) => {
         />
       </Link>
       <div className="absolute top-3 right-3 z-50">
-        <LikeButton targetId={member.userId} hasLiked={hasLiked}/>
+        <LikeButton targetId={member.userId} hasLiked={hasLiked} />
       </div>
       <div className="flex items-center justify-between mt-3 mb-2">
-        <p className="antialiased font-medium leading-relaxed text-blue-gray-900">
-          {member.name}
-        </p>
+        <div className="flex items-center">
+          <p className="antialiased font-medium leading-relaxed text-blue-gray-900">
+            {member.name}
+          </p>
+          <OnlineDot member={member} />
+        </div>
+
         <p className="antialiased font-medium leading-relaxed text-blue-gray-900">
           {calculateAge(member.dateOfBirth)}
         </p>
       </div>
-
     </div>
   );
 };
