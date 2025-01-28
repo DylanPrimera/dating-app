@@ -1,5 +1,6 @@
 "use client";
 
+import { useMessageStore } from "@/hooks";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,6 +13,7 @@ interface Props {
 export const NavItem: React.FC<Props> = ({ href, label }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
+  const  {unreadCount} = useMessageStore();
 
   return (
     <Link
@@ -22,6 +24,11 @@ export const NavItem: React.FC<Props> = ({ href, label }) => {
       )}
     >
       {label}
+      {
+        href === '/messages' && unreadCount > 0 && (
+          <span className="ml-1">({unreadCount})</span>
+        )
+      }
     </Link>
   );
 };

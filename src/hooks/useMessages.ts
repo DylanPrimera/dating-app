@@ -43,7 +43,7 @@ const inboxColumns = [
 ];
 
 export const useMessages = (initialMessages: MessageDto[]) => {
-  const { set, remove, messages, updateUnreadCount } = useMessageStore();
+  const { set, remove, messages,updateUnreadCount } = useMessageStore();
   const searchParams = useSearchParams();
   const router = useRouter();
   const isOutbox = searchParams.get("container") === "outbox";
@@ -63,7 +63,6 @@ export const useMessages = (initialMessages: MessageDto[]) => {
 
   const handleRowSelected = (messageId: string) => {
     const message = messages.find((m) => m.id === messageId);
-
     const url = isOutbox
       ? `/members/${message?.recipientId}`
       : `/members/${message?.senderId}`;
@@ -78,7 +77,7 @@ export const useMessages = (initialMessages: MessageDto[]) => {
       });
       await deleteMessages(message.id, isOutbox);
       remove(message.id);
-      if (!message.dateRead) {
+      if (!message.dateRead && !isOutbox) {
         updateUnreadCount(-1);
       }
       setDeleting({ id: "", loading: false });

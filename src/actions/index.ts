@@ -32,4 +32,4 @@ export {
 
 export { deleteImageFromCloudinary } from "./cloudinary/cloudinary.actions";
 
-export { createMessage, getMessagesThread, getMessagesByContainer, deleteMessages } from "./message/message.actions";
+export { createMessage, getMessagesThread, getMessagesByContainer,getUnreadMessageCount, deleteMessages } from "./message/message.actions";

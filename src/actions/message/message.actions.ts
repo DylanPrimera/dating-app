@@ -75,7 +75,7 @@ export const getMessagesThread = async (recipientId: string) => {
     });
 
     // update messages read
-
+    let readCount = 0;
     if(messages.length > 0) {
       const unreadMessagesIds = messages.filter(m =>  m.dateRead === null && m.recipient?.userId === userId && m.sender?. userId === recipientId).map(m => m.id);
 
@@ -88,10 +88,12 @@ export const getMessagesThread = async (recipientId: string) => {
         data: {dateRead: new Date()}
       });
 
+      readCount = unreadMessagesIds.length;
+
       await pusherServer.trigger(createChatId(recipientId, userId), 'message:read', unreadMessagesIds);
     }
 
-    return messages.map((message) => mapMessageToMessageDto(message));
+    return {messages: messages.map((message) => mapMessageToMessageDto(message)), readCount};
   } catch (error) {
     console.log("error", error);
     throw error;
@@ -163,6 +165,25 @@ export const deleteMessages = async (messageId: string, isOutbox: boolean) => {
     throw error;
   }
 };
+
+export const getUnreadMessageCount = async() =>{
+  try {
+    const userId = await getAuthUserId();
+
+
+    return prisma.message.count({
+      where: {
+        recipientId: userId,
+        dateRead: null,
+        recipientDeleted: false
+      }
+    })
+
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 const messageSelect = {
   id: true,

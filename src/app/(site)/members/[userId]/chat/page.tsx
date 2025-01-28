@@ -10,7 +10,7 @@ interface Props {
 
 export default async function ChatPage({ params }: Props) {
   const { userId } = await params;
-  const messages = await getMessagesThread(userId);
+  const {messages, readCount} = await getMessagesThread(userId);
   const authUserId = await getAuthUserId();
   const chatId = createChatId(authUserId, userId);
   return (
@@ -19,6 +19,7 @@ export default async function ChatPage({ params }: Props) {
       body={
         <MessageList
           initialMessages={messages}
+          readCount={readCount}
           currentUserId={authUserId}
           chatId={chatId}
         />
