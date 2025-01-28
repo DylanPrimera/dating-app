@@ -1,7 +1,7 @@
 "use client";
 import { deleteMessages } from "@/actions";
-import { Button } from "@/components";
-import { Avatar } from "@/components/ui/avatar";
+import { Button, PresenceAvatar } from "@/components";
+
 import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/table";
 import { cn, truncateString } from "@/lib";
 import { MessageDto } from "@/types";
-import { AvatarImage } from "@radix-ui/react-avatar";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useState } from "react";
@@ -73,11 +72,13 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
   const columns = isOutbox ? outboxColumns : inboxColumns;
 
   const handleRowSelected = (messageId: string) => {
-    const message = messages.find(m=> m.id === messageId);
+    const message = messages.find((m) => m.id === messageId);
 
-    const url = isOutbox ? `/members/${message?.recipientId}` : `/members/${message?.senderId}`;
-    router.push(url + '/chat');
-  }
+    const url = isOutbox
+      ? `/members/${message?.recipientId}`
+      : `/members/${message?.senderId}`;
+    router.push(url + "/chat");
+  };
 
   const handleDeleteMessage = useCallback(
     async (message: MessageDto) => {
@@ -105,22 +106,20 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         </TableHeader>
         <TableBody>
           {messages.map((message) => (
-            <TableRow key={message.id} className="cursor-pointer" onClick={()=>handleRowSelected(message.id)}>
+            <TableRow
+              key={message.id}
+              className="cursor-pointer"
+              onClick={() => handleRowSelected(message.id)}
+            >
               <TableCell
                 className={cn("flex items-center gap-2", {
                   "font-semibol": !message.dateRead && !isOutbox,
                 })}
               >
-                <Avatar>
-                  <AvatarImage
-                    alt="Image of member"
-                    src={
-                      (isOutbox
-                        ? message.recipientImage
-                        : message.senderImage) || ""
-                    }
-                  />
-                </Avatar>
+                <PresenceAvatar
+                  userId={isOutbox ? message.recipientId : message.senderId}
+                  src={isOutbox ? message.recipientImage : message.senderImage}
+                />
                 <span>
                   {truncateString(
                     isOutbox ? message.recipientName : message.senderName,
