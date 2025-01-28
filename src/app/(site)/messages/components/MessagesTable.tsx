@@ -1,5 +1,4 @@
 "use client";
-import { deleteMessages } from "@/actions";
 import { Button, PresenceAvatar } from "@/components";
 
 import { Card } from "@/components/ui/card";
@@ -11,88 +10,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useMessages } from "@/hooks";
 import { cn, truncateString } from "@/lib";
 import { MessageDto } from "@/types";
 import { Loader2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 
 interface Props {
-  messages: MessageDto[];
+  initialMessages: MessageDto[];
 }
 
-const outboxColumns = [
-  {
-    key: "recipientName",
-    label: "Recipient",
-  },
-  {
-    key: "text",
-    label: "Message",
-  },
-  {
-    key: "created",
-    label: "Time sent",
-  },
-  {
-    key: "actions",
-    label: "Actions",
-  },
-];
+export const MessagesTable: React.FC<Props> = ({ initialMessages }) => {
+  const { isOutbox, columns, deleteMessage, selectRow, isDeleting, messages } =
+    useMessages(initialMessages);
 
-const inboxColumns = [
-  {
-    key: "sendertName",
-    label: "Sender",
-  },
-  {
-    key: "text",
-    label: "Message",
-  },
-  {
-    key: "created",
-    label: "Time received",
-  },
-  {
-    key: "actions",
-    label: "Actions",
-  },
-];
-
-export const MessagesTable: React.FC<Props> = ({ messages }) => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const isOutbox = searchParams.get("container") === "outbox";
-  const [isDeleting, setDeleting] = useState({
-    id: "",
-    loading: false,
-  });
-
-  const columns = isOutbox ? outboxColumns : inboxColumns;
-
-  const handleRowSelected = (messageId: string) => {
-    const message = messages.find((m) => m.id === messageId);
-
-    const url = isOutbox
-      ? `/members/${message?.recipientId}`
-      : `/members/${message?.senderId}`;
-    router.push(url + "/chat");
+  const handleDeleteMessage = (
+    message: MessageDto,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    deleteMessage(message);
   };
-
-  const handleDeleteMessage = useCallback(
-    async (message: MessageDto) => {
-      setDeleting({
-        id: message.id,
-        loading: true,
-      });
-      await deleteMessages(message.id, isOutbox);
-      router.refresh();
-      setDeleting({ id: "", loading: false });
-    },
-
-    [isOutbox, router]
-  );
 
   return (
     <Card className="flex flex-col gap-3 h-[80vh] overflow-auto p-4">
@@ -105,17 +43,15 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {messages.map((message) => (
+          {messages?.map((message) => (
             <TableRow
               key={message.id}
-              className="cursor-pointer"
-              onClick={() => handleRowSelected(message.id)}
+              className={cn("cursor-pointer", {
+                "font-semibold": !message.dateRead && !isOutbox,
+              })}
+              onClick={() => selectRow(message.id)}
             >
-              <TableCell
-                className={cn("flex items-center gap-2", {
-                  "font-semibol": !message.dateRead && !isOutbox,
-                })}
-              >
+              <TableCell className="flex items-center gap-2">
                 <PresenceAvatar
                   userId={isOutbox ? message.recipientId : message.senderId}
                   src={isOutbox ? message.recipientImage : message.senderImage}
@@ -147,7 +83,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                   variant="outline"
                   className="bg-transparent border-none shadow-none"
                   size="icon"
-                  onClick={() => handleDeleteMessage(message)}
+                  onClick={(e) => handleDeleteMessage(message, e)}
                   disabled={isDeleting.loading}
                 >
                   {isDeleting.id === message.id && isDeleting.loading ? (

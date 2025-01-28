@@ -13,10 +13,10 @@ export default async function MessagesPage({ searchParams }: Props) {
   return (
     <div className="grid grid-cols-12 gap-5 h-[80vh] my-12">
       <div className="col-span-12 md:col-span-2">
-        <MessagesSidebar messagesCount={messages?.length}/>
+        <MessagesSidebar/>
       </div>
       <div className="col-span-12 md:col-span-10">
-        <MessagesTable messages={messages}/>
+        <MessagesTable initialMessages={messages}/>
       </div>
     </div>
   );

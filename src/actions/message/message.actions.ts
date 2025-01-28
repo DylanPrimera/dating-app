@@ -38,7 +38,7 @@ export const createMessage = async (
       "message:new",
       messageDto
     );
-
+    console.log(recipienUserId);
     //channel for notification
     await pusherServer.trigger(
       `private-${recipienUserId}`,

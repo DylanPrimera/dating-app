@@ -1,3 +1,4 @@
+export * from './useMessages';
 export * from './useMessageStore';
 export * from './useNotificationChannel';
 export * from './usePresenceChannel';
