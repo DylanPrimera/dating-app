@@ -1,9 +1,8 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { cn, formatMessageTime, getInitials, timeAgo } from "@/lib";
+import { PresenceAvatar } from "@/components";
+import { cn, formatMessageTime, timeAgo } from "@/lib";
 import { MessageDto } from "@/types";
-import { AvatarImage } from "@radix-ui/react-avatar";
 import { useEffect, useRef } from "react";
 
 interface Props {
@@ -27,16 +26,10 @@ export const MessageBox: React.FC<Props> = ({
   }, [messageEndRef]);
 
   const renderAvatar = () => (
-    <Avatar>
-      <AvatarImage
-        src={message.senderImage ?? "https://github.com/shadcn.png"}
-        className="w-full"
-        alt="User avatar"
-      />
-      <AvatarFallback className="text-black">
-        {getInitials(message.senderName ?? "")}
-      </AvatarFallback>
-    </Avatar>
+    <PresenceAvatar
+      src={message.senderImage ?? "https://github.com/shadcn.png"}
+      userId={message.senderId}
+    />
   );
 
   const messageContentClasses = cn(
@@ -82,7 +75,6 @@ export const MessageBox: React.FC<Props> = ({
       </span>
     </div>
   );
-
 
   return (
     <div

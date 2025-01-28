@@ -18,7 +18,9 @@ export const MessageList: React.FC<Props> = ({
   chatId,
 }) => {
   const [messages, setMessages] = useState(initialMessages);
+
   const handleNewMessages = useCallback((message: MessageDto) => {
+    console.log(message);
     setMessages((prevState) => {
       return [...prevState, message];
     });

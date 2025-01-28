@@ -39,6 +39,13 @@ export const createMessage = async (
       messageDto
     );
 
+    //channel for notification
+    await pusherServer.trigger(
+      `private-${recipienUserId}`,
+      "message:new",
+      messageDto
+    );
+
     return { status: "success", data: messageDto };
   } catch (error) {
     console.log("emssage error", error);

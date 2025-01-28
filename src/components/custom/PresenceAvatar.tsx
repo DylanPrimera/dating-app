@@ -14,11 +14,10 @@ export const PresenceAvatar: React.FC<Props> = ({ userId, src }) => {
   const { membersId } = usePresenceStore();
   const isOnline = userId && membersId.indexOf(userId) !== -1;
 
-  console.log(isOnline);
   return (
     <Badge
       color="success"
-      className={cn("bg-green-500 border-none", {
+      className={cn("bg-green-500 border-none right-0 w-2.5 h-2.5", {
         hidden: !isOnline,
       })}
       content=""
