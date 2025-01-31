@@ -42,16 +42,14 @@ export const getMembers = async ({
       },
     };
 
-
     const count = await prisma.member.count(membersSelection);
 
     const members = await prisma.member.findMany({
       ...membersSelection,
-      orderBy: {[orderBy]: 'desc'},
+      orderBy: { [orderBy]: "desc" },
       skip,
-      take: limit
-    })
-
+      take: limit,
+    });
 
     return { items: members, totalCount: count };
   } catch (error) {
@@ -88,4 +86,18 @@ export const getMemberPhotos = async (userId: string) => {
   if (!member) return null;
 
   return member.photos.map((p) => p) as Photo[];
+};
+
+export const updateLastActive = async () => {
+  const userId = await getAuthUserId();
+
+  try {
+    return prisma.member.update({
+      where: { userId },
+      data: { updated: new Date() },
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

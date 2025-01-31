@@ -2,6 +2,7 @@ export {
   getMembers,
   getMemberById,
   getMemberPhotos,
+  updateLastActive
 } from "./members/members.actions";
 export {
   getUserByEmail,
