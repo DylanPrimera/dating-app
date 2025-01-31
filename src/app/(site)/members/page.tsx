@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default async function MembersPage({ searchParams }: Props) {
-  const { items: members } = await getMembers(await searchParams);
+  const { items: members, totalCount } = await getMembers(await searchParams);
   const likeIds = await getCurrentUserLikeIds();
   return (
     <>
@@ -19,16 +19,14 @@ export default async function MembersPage({ searchParams }: Props) {
           ))}
         </div>
       )}
-      {
-        members.length > 0 && (<PaginationComponent />)
-      }
-      {
-        members.length <=0 && (
-          <div className="flex items-center justify-center h-screen w-full m-auto">
-            <h1 className="text-gray-600 text-2xl font-semibold">No data to show.</h1>
-          </div>
-        )
-      }
+      {members.length > 0 && <PaginationComponent totalCount={totalCount} />}
+      {members.length <= 0 && (
+        <div className="flex items-center justify-center h-screen w-full m-auto">
+          <h1 className="text-gray-600 text-2xl font-semibold">
+            No data to show.
+          </h1>
+        </div>
+      )}
     </>
   );
 }

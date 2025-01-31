@@ -28,6 +28,7 @@ export const Filters = () => {
     selectGender,
     selectOrder,
     selectWithPhoto,
+    totalCount
   } = useFilters();
   const { ageRange, gender, orderBy, withPhoto } = filters;
   const [orderValue, setOrderValue] = useState(orderBy);
@@ -44,7 +45,7 @@ export const Filters = () => {
     <div className="shadow-md py-3 w-full">
       <div className="flex justify-between items-center lg:w-[92%]  2xl:w-[70%] lg:mx-auto text-white">
         <div className="flex gap-2 items-center">
-          <div className="text-gray-400 font-semibold text-xl">Results: x</div>
+          <div className="text-gray-400 font-semibold text-xl">Results: {totalCount}</div>
         </div>
         <div className="flex gap-2 items-center">
           <span className="text-black">Gender:</span>

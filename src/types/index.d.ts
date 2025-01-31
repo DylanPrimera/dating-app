@@ -52,3 +52,13 @@ type PaginatedResponse<T> = {
   items: T[];
   totalCount: number;
 }
+
+type PagingParams = {
+  page?: number;
+  pageSize?: number;
+}
+
+type PagingResult = {
+  totalPages: number;
+  totalCount: number;
+} & PagingParams;

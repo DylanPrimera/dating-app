@@ -27,7 +27,6 @@ export const getMembers = async ({
     selectedGender = gender.split(',');
   }
   try {
-    console.log(selectedGender);
     const membersSelection = {
       where: {
         AND: [

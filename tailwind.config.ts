@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import type { Config } from "tailwindcss";
-const {heroui} = require("@heroui/theme");
+import {heroui} from "@heroui/react";
 
 export default {
     darkMode: ["class"],

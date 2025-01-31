@@ -1,25 +1,37 @@
-import { usePathname, useRouter} from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useFilterStore } from "./useFiltersStore";
 import { ChangeEvent, useEffect } from "react";
 import { FaFemale, FaMale } from "react-icons/fa";
+import { usePaginationStore } from "./usePaginationStore";
 
 export const useFilters = () => {
   const pathname = usePathname();
   const router = useRouter();
 
   const { filters, setFilters } = useFilterStore();
+  const { pagination, setPage  } = usePaginationStore();
+  const { totalCount, page, pageSize } = pagination;
+
   const { gender, ageRange, orderBy, withPhoto } = filters;
+
+  useEffect(() => {
+    if (gender || ageRange || orderBy || withPhoto || pageSize) {
+      setPage(1);
+    }
+  }, [gender, ageRange, orderBy, setPage, withPhoto,pageSize]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams();
 
+    if (page) searchParams.set("page", page.toString());
+    if (pageSize) searchParams.set("pageSize", pageSize.toString());
     if (gender) searchParams.set("gender", gender.join(","));
     if (ageRange) searchParams.set("ageRange", ageRange.join(","));
     if (orderBy) searchParams.set("orderBy", orderBy);
     if (withPhoto) searchParams.set("withPhoto", withPhoto.toString());
 
     router.replace(`${pathname}?${searchParams.toString()}`);
-  }, [ageRange, orderBy, gender, router, pathname, withPhoto]);
+  }, [page, pageSize, ageRange, orderBy, gender, router, pathname, withPhoto]);
 
   const orderByList = [
     { label: "Last active", value: "updated" },
@@ -60,13 +72,14 @@ export const useFilters = () => {
     setFilters("withPhoto", e.target.checked);
   };
 
-  return  {
+  return {
     orderByList,
     genderList,
     selectAge: handleAgeSelect,
     selectGender: handleGenderSelect,
     selectOrder: handleOrderBy,
     selectWithPhoto: handleWithPhotoToggle,
-    filters
-  }
+    filters,
+    totalCount,
+  };
 };
