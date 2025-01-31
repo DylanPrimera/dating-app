@@ -14,6 +14,7 @@ body[data-scroll-locked] {
 ::-webkit-scrollbar {
   width: 0.6rem;
   height: 0.25rem;
+  z-index: 999;
 }
 
 ::-webkit-scrollbar-track {
@@ -25,4 +26,12 @@ body[data-scroll-locked] {
 ::-webkit-scrollbar-thumb {
   background-color: #f5abb9;
   border-radius: 0.25rem;
+}
+
+@layer components {
+  .page-size-box {
+    @apply cursor-pointer border-2 hover:bg-gray-100 
+        flex items-center justify-center rounded-lg 
+        shadow-sm min-w-[36px] w-9 h-9 text-sm;
+  }
 }

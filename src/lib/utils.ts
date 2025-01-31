@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { differenceInYears, format, formatDistance } from "date-fns";
+import { addYears, differenceInYears, format, formatDistance } from "date-fns";
 import { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { ZodIssue } from "zod";
 import { MessageWithSenderRecipient } from "@/types";
@@ -83,4 +83,14 @@ export function truncateString(text?: string | null, num = 50) {
 
 export function createChatId(a: string, b:string) {
   return a > b ? `${b}-${a}` : `${a}-${b}`;
+}
+
+
+export function getAgeRange(ageRange: string): Date[] {
+  const [minAge, maxAge] = ageRange.split(',');
+  const currentDate = new Date();
+  const minDob = addYears(currentDate, -maxAge-1);
+  const maxDob = addYears(currentDate, -minAge);
+
+  return [minDob, maxDob]
 }

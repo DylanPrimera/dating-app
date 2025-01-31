@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
     request.cookies?.get("authjs.session-token")?.value !== undefined;
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-
+  
   if (isPublicRoute) {
     return NextResponse.next();
   }

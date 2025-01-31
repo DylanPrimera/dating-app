@@ -1,15 +1,34 @@
 import { getCurrentUserLikeIds, getMembers } from "@/actions";
 import { MemberCard } from "./components/MemberCard";
+import { PaginationComponent } from "@/components";
+import { FiltersParams } from "@/types";
 
-export default async function MembersPage() {
-  const members = await getMembers();
+interface Props {
+  searchParams: Promise<FiltersParams>;
+}
+
+export default async function MembersPage({ searchParams }: Props) {
+  const { items: members } = await getMembers(await searchParams);
   const likeIds = await getCurrentUserLikeIds();
   return (
-    <div className="my-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-7">
-      {members &&
-        members.map((member) => (
-          <MemberCard key={member.userId} member={member} likeIds={likeIds} />
-        ))}
-    </div>
+    <>
+      {members.length > 0 && (
+        <div className="my-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-7">
+          {members.map((member) => (
+            <MemberCard key={member.userId} member={member} likeIds={likeIds} />
+          ))}
+        </div>
+      )}
+      {
+        members.length > 0 && (<PaginationComponent />)
+      }
+      {
+        members.length <=0 && (
+          <div className="flex items-center justify-center h-screen w-full m-auto">
+            <h1 className="text-gray-600 text-2xl font-semibold">No data to show.</h1>
+          </div>
+        )
+      }
+    </>
   );
 }
