@@ -17,11 +17,17 @@ export const getMembers = async ({
 }: FiltersParams): Promise<PaginatedResponse<Member>> => {
   const userId = await getAuthUserId();
   const [minDob, maxDob] = getAgeRange(ageRange);
-  const selectedGender = gender.split(",");
+  let selectedGender;
   const pageNumber = parseInt(page);
   const limit = parseInt(pageSize);
   const skip = (pageNumber - 1) * limit;
+  if(gender.includes('') && gender.length===0) {
+    selectedGender = ['male', 'female'];
+  } else {
+    selectedGender = gender.split(',');
+  }
   try {
+    console.log(selectedGender);
     const membersSelection = {
       where: {
         AND: [
