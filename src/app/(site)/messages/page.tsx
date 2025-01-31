@@ -8,15 +8,16 @@ interface Props {
 
 export default async function MessagesPage({ searchParams }: Props) {
   const { container } = await searchParams;
-  const messages = await getMessagesByContainer(container);
-
+  const {messages, nextCursor} = await getMessagesByContainer(container);
+  console.log("messages", messages);
+  console.log("nextCursor", nextCursor);
   return (
     <div className="grid grid-cols-12 gap-5 h-[80vh] my-12">
       <div className="col-span-12 md:col-span-2">
         <MessagesSidebar/>
       </div>
       <div className="col-span-12 md:col-span-10">
-        <MessagesTable initialMessages={messages}/>
+        <MessagesTable initialMessages={messages} nextCursor={nextCursor}/>
       </div>
     </div>
   );

@@ -22,7 +22,11 @@ export const useMessageStore = create<MessageState>()(
         set((state) => ({
           messages: state.messages.filter((message) => message.id !== id),
         })),
-      set: (messages) => set({ messages }),
+      set: (messages) => set(state => {
+        const map = new Map([...state.messages, ...messages].map(m => [m.id,m]));
+        const uniqueMessages = Array.from(map.values());
+        return {messages: uniqueMessages}
+      }),
       updateUnreadCount: (amount: number) =>
         set((state) => ({ unreadCount: state.unreadCount + amount })),
     }),

@@ -1,8 +1,8 @@
 import { MessageDto } from "@/types";
 import { useMessageStore } from "./useMessageStore";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { deleteMessages } from "@/actions";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { deleteMessages, getMessagesByContainer } from "@/actions";
 
 const outboxColumns = [
   {
@@ -42,15 +42,24 @@ const inboxColumns = [
   },
 ];
 
-export const useMessages = (initialMessages: MessageDto[]) => {
-  const { set, remove, messages,updateUnreadCount } = useMessageStore();
+export const useMessages = (
+  initialMessages: MessageDto[],
+  nextCursor?: string
+) => {
+  const { set, remove, messages, updateUnreadCount } = useMessageStore();
+
+  const cursorRef = useRef(nextCursor);
+
   const searchParams = useSearchParams();
   const router = useRouter();
+  const container = searchParams.get("container");
   const isOutbox = searchParams.get("container") === "outbox";
   const [isDeleting, setDeleting] = useState({
     id: "",
     loading: false,
   });
+
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     set(initialMessages);
@@ -60,6 +69,19 @@ export const useMessages = (initialMessages: MessageDto[]) => {
   }, [initialMessages, set]);
 
   const columns = isOutbox ? outboxColumns : inboxColumns;
+
+  const loadMore = useCallback(async () => {
+    if (cursorRef.current) {
+      setLoadingMore(true);
+      const { messages, nextCursor } = await getMessagesByContainer(
+        container!,
+        cursorRef.current
+      );
+      set(messages);
+      cursorRef.current = nextCursor;
+      setLoadingMore(false);
+    }
+  }, [container, set]);
 
   const handleRowSelected = (messageId: string) => {
     const message = messages.find((m) => m.id === messageId);
@@ -93,5 +115,8 @@ export const useMessages = (initialMessages: MessageDto[]) => {
     selectRow: handleRowSelected,
     isDeleting,
     messages,
+    loadingMore,
+    loadMore,
+    hasMore: !!cursorRef.current,
   };
 };
