@@ -25,7 +25,7 @@ export const Filters = () => {
 
   const genderList = [
     {
-      value: "Male",
+      value: "male",
       icon: FaMale,
     },
     {
@@ -34,15 +34,32 @@ export const Filters = () => {
     },
   ];
 
+
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
-  
+
+  const selectedGender = searchParams.get("gender")?.split(",") || [
+    "male",
+    "female",
+  ];
+  const handleGenderSelect = (gender: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (selectedGender.includes(gender)) {
+      params.set(
+        "gender",
+        selectedGender.filter((g) => g !== gender).toString()
+      );
+    } else {
+      params.set("gender", [...selectedGender, gender].toString());
+    }
+    router.replace(`${pathname}?${params}`);
+  };
 
   const handleAgeSelect = (values: number[]) => {
     const params = new URLSearchParams(searchParams);
     setAgeValues(values);
-    params.set("ageRange", values.toLocaleString());
+    params.set("ageRange", values.toString());
     router.replace(`${pathname}?${params}`);
   };
 
@@ -63,14 +80,19 @@ export const Filters = () => {
 
   useMemo(() => {
     const params = new URLSearchParams(searchParams);
-    if(params.get('ageRange') !== undefined) {
-      const ageValues = params.get('ageRange')?.split(',').map((n) => parseInt(n));
-      setAgeValues(ageValues!);
-    } 
-
-    if(params.get('orderBy') !== undefined) {
-      const orderByValue = params.get('orderBy');
-      setOrderValue(orderByValue || '');
+    if(params.size !== 0) {
+      if (params.get("ageRange") !== null) {
+        const ageValues = params
+          .get("ageRange")
+          ?.split(",")
+          .map((n) => parseInt(n));
+        setAgeValues(ageValues!);
+      }
+  
+      if (params.get("orderBy") !== null) {
+        const orderByValue = params.get("orderBy");
+        setOrderValue(orderByValue || "");
+      }
     }
 
   }, [searchParams]);
@@ -84,8 +106,17 @@ export const Filters = () => {
         <div className="flex gap-2 items-center">
           <span className="text-black">Gender:</span>
           {genderList.map(({ icon: Icon, value }) => (
-            <Button key={value} size="icon" variant="outline" title={value}>
-              <Icon size={24} color="black" />
+            <Button
+              key={value}
+              size="icon"
+              variant={selectedGender.includes(value) ? "default" : "outline"}
+              title={value}
+              onClick={() => handleGenderSelect(value)}
+            >
+              <Icon
+                size={24}
+                color={selectedGender.includes(value) ? "white" : "black"}
+              />
             </Button>
           ))}
         </div>
