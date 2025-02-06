@@ -4,7 +4,7 @@ import { Channel, Members } from "pusher-js";
 import { pusherClient } from "@/lib";
 import { updateLastActive } from "@/actions";
 
-export const usePresenceChannel = () => {
+export const usePresenceChannel = (userId?:string | null) => {
   const { set, add, remove } = usePresenceStore();
   const channelRef = useRef<Channel | null>(null);
 
@@ -30,6 +30,7 @@ export const usePresenceChannel = () => {
   );
 
   useEffect(() => {
+    if(!userId) return; 
     if (!channelRef.current) {
       channelRef.current = pusherClient.subscribe("presence-neinter");
 

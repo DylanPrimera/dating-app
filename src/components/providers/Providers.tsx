@@ -35,7 +35,7 @@ export const Providers: React.FC<Props> = ({ children, userId }) => {
     }
   }, [setUnreadCount, userId]);
 
-  usePresenceChannel();
+  usePresenceChannel(userId);
   useNotificationChannel(userId);
   return (
     <SessionProvider>
