@@ -5,6 +5,7 @@ import { Input } from "@/components";
 import { loginSchema, LoginSchema } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -92,7 +93,8 @@ export const LoginForm = () => {
           </div>
 
           <Button className="w-full" type="submit" disabled={isLoading}>
-            Login
+            {isLoading && <Loader2 className="animate-spin"/>}
+            {isLoading ? 'Login in..':'Login'}
           </Button>
         </form>
         <div className="flex items-center my-5">
