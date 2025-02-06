@@ -9,6 +9,7 @@ interface MessageState {
   remove: (id: string) => void;
   set: (messages: MessageDto[]) => void;
   updateUnreadCount: (amount: number) => void;
+  resetMessages: ()=> void;
 }
 
 export const useMessageStore = create<MessageState>()(
@@ -29,6 +30,7 @@ export const useMessageStore = create<MessageState>()(
       }),
       updateUnreadCount: (amount: number) =>
         set((state) => ({ unreadCount: state.unreadCount + amount })),
+      resetMessages: () => set({messages: []}),
     }),
     { name: "messages-store" }
   )

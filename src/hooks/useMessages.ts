@@ -46,7 +46,7 @@ export const useMessages = (
   initialMessages: MessageDto[],
   nextCursor?: string
 ) => {
-  const { set, remove, messages, updateUnreadCount } = useMessageStore();
+  const { set, remove, messages, updateUnreadCount, resetMessages } = useMessageStore();
 
   const cursorRef = useRef(nextCursor);
 
@@ -64,7 +64,7 @@ export const useMessages = (
   useEffect(() => {
     set(initialMessages);
     return () => {
-      set([]);
+      resetMessages();
     };
   }, [initialMessages, set]);
 
