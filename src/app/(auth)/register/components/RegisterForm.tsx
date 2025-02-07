@@ -1,23 +1,53 @@
 "use client";
 
 import { registerUser } from "@/actions";
-import { Button, Input } from "@/components";
-import { handleFormServerErrors, RegisterSchema } from "@/lib";
+import { Button } from "@/components";
+import {
+  handleFormServerErrors,
+  profileSchema,
+  registerSchema,
+  RegisterSchema,
+} from "@/lib";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { MemberForm } from "./MemberForm";
+import { MemberDetailForm } from "./MemberDetailForm";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const stepSchemas = [registerSchema, profileSchema];
 
 export const RegisterForm = () => {
-  const {
-    register,
-    handleSubmit,
-    setError,
-    reset,
-    formState: { isValid, errors },
-  } = useForm<RegisterSchema>({
-    // resolver: zodResolver(registerSchema),
+  const [activeStep, setActiveStep] = useState(0);
+  const currentValidationSchema = stepSchemas[activeStep];
+  const [isLoading, setIsLoading] = useState(false);
+  const registerFormMethods = useForm<RegisterSchema>({
+    resolver: zodResolver(currentValidationSchema),
     mode: "onTouched",
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const { handleSubmit, getValues, setError, reset } = registerFormMethods;
+
+  const getStepContent = (step: number) => {
+    switch (step) {
+      case 0:
+        return <MemberForm />;
+      case 1:
+        return <MemberDetailForm />;
+      default:
+        return "Unknown step";
+    }
+  };
+
+  const onBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const onNext = async () => {
+    if (activeStep === stepSchemas.length - 1) {
+      await doRegister(getValues());
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+  };
 
   const doRegister: SubmitHandler<RegisterSchema> = async (data) => {
     setIsLoading(true);
@@ -38,73 +68,25 @@ export const RegisterForm = () => {
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div className="bg-white px-4 py-8 sm:rounded-lg sm:px-10">
-        <form className="space-y-6" onSubmit={handleSubmit(doRegister)}>
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium leading-6 text-gray-900 mb-2"
-            >
-              Name
-            </label>
-            <Input
-              id="name"
-              placeholder="John Doe"
-              type="name"
-              {...register("name")}
-            />
-
-            {!isValid && errors.name && (
-              <span className="text-red-500 text-sm">
-                {errors.name.message as string}
-              </span>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900 mb-2"
-            >
-              Email
-            </label>
-            <Input
-              id="email"
-              placeholder="example@mail.com"
-              type="email"
-              {...register("email", {
-                pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-              })}
-            />
-
-            {!isValid && errors.email && (
-              <span className="text-red-500 text-sm">
-                {errors.email.message as string}
-              </span>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium leading-6 text-gray-900 mb-2"
-            >
-              Password
-            </label>
-            <Input
-              id="password"
-              placeholder="*****"
-              type="password"
-              {...register("password")}
-            />
-            {!isValid && errors.password && (
-              <span className="text-red-500 text-sm">
-                {errors.password.message as string}
-              </span>
-            )}
-          </div>
-
-          <Button className="w-full" type="submit" disabled={isLoading}>
-            Register
-          </Button>
-        </form>
+        <FormProvider {...registerFormMethods}>
+          <form onSubmit={handleSubmit(onNext)}>
+            <div className="space-y-4">
+              {getStepContent(activeStep)}
+              <div className="flex flex-row items-center gap-6">
+                {activeStep !== 0 && (
+                  <Button type="button" className="w-full" onClick={onBack}>
+                    Back
+                  </Button>
+                )}
+                <Button className="w-full" type="submit" disabled={isLoading}>
+                  {activeStep === stepSchemas.length - 1
+                    ? "Submit"
+                    : "Continue"}
+                </Button>
+              </div>
+            </div>
+          </form>
+        </FormProvider>
       </div>
     </div>
   );

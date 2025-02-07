@@ -6,6 +6,7 @@ import prisma from "@/lib/prisma";
 import { ActionResult } from "@/types";
 import bcrypt from "bcryptjs";
 import { AuthError, User } from "next-auth";
+import { combinedRegisterSchema } from '../../lib/schemas/RegisterSchema';
 
 export const signInUser = async (
   data: LoginSchema
@@ -46,13 +47,13 @@ export const registerUser = async (
   data: RegisterSchema
 ): Promise<ActionResult<User>> => {
   try {
-    const validated = registerSchema.safeParse(data);
+    const validated = combinedRegisterSchema.safeParse(data);
 
     if (!validated.success) {
       return { status: "error", error: validated.error.errors };
     }
 
-    const { name, email, password } = validated.data;
+    const { name, email, password, gender, description,dateOfBirth,city, country } = validated.data;
 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -68,7 +69,17 @@ export const registerUser = async (
       data: {
         name,
         email,
-        passwordHash: hashedPassword,
+        passwordHash: hashedPassword, 
+        member: {
+          create: {
+            name,
+            description,
+            city,
+            country,
+            dateOfBirth: new Date(dateOfBirth),
+            gender
+          }
+        }
       },
     });
 
