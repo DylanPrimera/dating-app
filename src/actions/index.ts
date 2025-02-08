@@ -18,6 +18,7 @@ export {
   registerUser,
   getAuthUserId,
   getUserRole,
+  verifyEmail
 } from "./auth/auth.actions";
 export {
   toggleLikeMember,

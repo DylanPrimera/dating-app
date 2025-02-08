@@ -1,12 +1,22 @@
 "use server";
 
 import { auth, signIn, signOut } from "@/auth";
-import { LoginSchema, registerSchema, RegisterSchema } from "@/lib";
+import {
+  generateToken,
+  getTokenByToken,
+  LoginSchema,
+  registerSchema,
+  RegisterSchema,
+  resetPassword,
+  sendVerificationEmail,
+} from "@/lib";
 import prisma from "@/lib/prisma";
 import { ActionResult } from "@/types";
 import bcrypt from "bcryptjs";
 import { AuthError, User } from "next-auth";
-import { combinedRegisterSchema } from '../../lib/schemas/RegisterSchema';
+import { combinedRegisterSchema } from "../../lib/schemas/RegisterSchema";
+import { TokenType } from "@prisma/client";
+import { getUserByEmail } from "../user/user.actions";
 
 export const signInUser = async (
   data: LoginSchema
@@ -20,6 +30,18 @@ export const signInUser = async (
 
     if (!userExists) {
       return { status: "error", error: "User doesn't exists" };
+    }
+    if (!userExists.emailVerified) {
+      const { token, email } = await generateToken(
+        userExists.email!,
+        TokenType.VERIFICATION
+      );
+
+      await sendVerificationEmail(email, token);
+      return {
+        status: "error",
+        error: "Please verify your email before loggin in",
+      };
     }
     await signIn("credentials", { ...data, redirect: false });
 
@@ -53,7 +75,16 @@ export const registerUser = async (
       return { status: "error", error: validated.error.errors };
     }
 
-    const { name, email, password, gender, description,dateOfBirth,city, country } = validated.data;
+    const {
+      name,
+      email,
+      password,
+      gender,
+      description,
+      dateOfBirth,
+      city,
+      country,
+    } = validated.data;
 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -69,7 +100,7 @@ export const registerUser = async (
       data: {
         name,
         email,
-        passwordHash: hashedPassword, 
+        passwordHash: hashedPassword,
         member: {
           create: {
             name,
@@ -77,16 +108,80 @@ export const registerUser = async (
             city,
             country,
             dateOfBirth: new Date(dateOfBirth),
-            gender
-          }
-        }
+            gender,
+          },
+        },
       },
     });
 
+    const { token, email: registerEmail } = await generateToken(
+      email,
+      TokenType.VERIFICATION
+    );
+
+    await sendVerificationEmail(registerEmail, token);
     return { status: "success", data: user };
   } catch (error) {
     console.log(error);
     return { status: "error", error: "Something went wrong" };
+  }
+};
+
+export const verifyEmail = async (
+  token: string
+): Promise<ActionResult<string>> => {
+  try {
+    const existingToken = await getTokenByToken(token);
+
+    if (!existingToken) {
+      return { status: "error", error: "Invalid token" };
+    }
+
+    const hasExpired = new Date() > existingToken.expires;
+
+    if (hasExpired) {
+      return { status: "error", error: "Token has expired" };
+    }
+
+    const existingUser = await getUserByEmail(existingToken.email);
+
+    if (!existingUser) {
+      return { status: "error", error: "User not found" };
+    }
+
+    await prisma.user.update({
+      where: { id: existingUser.id },
+      data: { emailVerified: new Date() },
+    });
+
+    await prisma.token.delete({ where: { id: existingToken.id } });
+
+    return { status: "success", data: "Email verified" };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const generateResetPasswordEmail = async (
+  email: string
+): Promise<ActionResult<string>> => {
+  try {
+    const existingUser = await getUserByEmail(email);
+
+    if (!existingUser) {
+      return { status: "error", error: "User not found" };
+    }
+
+    const { token, email: TokenEmail } = await generateToken(
+      email,
+      TokenType.PASSWORD_RESET
+    );
+
+    await resetPassword(TokenEmail, token);
+    return { status: "success", data: "Email sent" };
+
+  } catch (error) {
+    throw error;
   }
 };
 

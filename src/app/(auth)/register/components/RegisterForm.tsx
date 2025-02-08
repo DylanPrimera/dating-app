@@ -13,10 +13,13 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { MemberForm } from "./MemberForm";
 import { MemberDetailForm } from "./MemberDetailForm";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const stepSchemas = [registerSchema, profileSchema];
 
 export const RegisterForm = () => {
+  const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const currentValidationSchema = stepSchemas[activeStep];
   const [isLoading, setIsLoading] = useState(false);
@@ -54,8 +57,9 @@ export const RegisterForm = () => {
     try {
       const resp = await registerUser(data);
       if (resp.status === "success") {
-        console.log("user register success");
+        toast.success('Register completed');
         reset();
+        router.push("/login");
       } else {
         handleFormServerErrors(resp, setError);
       }

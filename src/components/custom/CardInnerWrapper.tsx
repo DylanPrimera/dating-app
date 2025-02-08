@@ -1,16 +1,16 @@
 'use client';
 import React, { ReactNode } from "react";
-import { CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 
 interface Props {
   header: ReactNode | string;
-  body: ReactNode;
+  body?: ReactNode;
   footer?: ReactNode;
 }
 
 export const CardInnerWrapper: React.FC<Props> = ({ header, body, footer }) => {
   return (
-    <>
+    <Card className="w-1/2 mx-auto my-4">
       <CardHeader>
         {
             typeof header === 'string' ? (
@@ -29,6 +29,6 @@ export const CardInnerWrapper: React.FC<Props> = ({ header, body, footer }) => {
             {footer}
         </CardFooter>
       )}
-    </>
+    </Card>
   );
 };
