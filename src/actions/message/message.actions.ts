@@ -139,16 +139,16 @@ export const getMessagesByContainer = async (
     });
 
     let nextCursor: string | undefined;
-    if(messages.length > limit) {
+    if (messages.length > limit) {
       const nextItem = messages.pop();
       nextCursor = nextItem?.created.toISOString();
-    
     } else {
       nextCursor = undefined;
     }
 
-    const messagesToReturn =  messages.map((message) => mapMessageToMessageDto(message));
-
+    const messagesToReturn = messages.map((message) =>
+      mapMessageToMessageDto(message)
+    );
 
     return {
       messages: messagesToReturn,
@@ -205,14 +205,15 @@ export const deleteMessages = async (messageId: string, isOutbox: boolean) => {
 export const getUnreadMessageCount = async () => {
   try {
     const userId = await getAuthUserId();
-
-    return prisma.message.count({
-      where: {
-        recipientId: userId,
-        dateRead: null,
-        recipientDeleted: false,
-      },
-    });
+    if (userId) {
+      return prisma.message.count({
+        where: {
+          recipientId: userId,
+          dateRead: null,
+          recipientDeleted: false,
+        },
+      });
+    }
   } catch (error) {
     console.log(error);
     throw error;

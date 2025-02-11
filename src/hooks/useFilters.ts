@@ -9,7 +9,7 @@ export const useFilters = () => {
   const router = useRouter();
 
   const { filters, setFilters } = useFilterStore();
-  const { pagination, setPage  } = usePaginationStore();
+  const { pagination, setPage } = usePaginationStore();
   const { totalCount, page, pageSize } = pagination;
 
   const { gender, ageRange, orderBy, withPhoto } = filters;
@@ -18,19 +18,19 @@ export const useFilters = () => {
     if (gender || ageRange || orderBy || withPhoto || pageSize) {
       setPage(1);
     }
-  }, [gender, ageRange, orderBy, setPage, withPhoto,pageSize]);
+  }, [gender, ageRange, orderBy, setPage, withPhoto, pageSize]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams();
-
-    if (page) searchParams.set("page", page.toString());
-    if (pageSize) searchParams.set("pageSize", pageSize.toString());
-    if (gender) searchParams.set("gender", gender.join(","));
-    if (ageRange) searchParams.set("ageRange", ageRange.join(","));
-    if (orderBy) searchParams.set("orderBy", orderBy);
-    if (withPhoto) searchParams.set("withPhoto", withPhoto.toString());
-
-    router.replace(`${pathname}?${searchParams.toString()}`);
+    if (searchParams) {
+      if (page) searchParams.set("page", page.toString());
+      if (pageSize) searchParams.set("pageSize", pageSize.toString());
+      if (gender) searchParams.set("gender", gender.join(","));
+      if (ageRange) searchParams.set("ageRange", ageRange.join(","));
+      if (orderBy) searchParams.set("orderBy", orderBy);
+      if (withPhoto) searchParams.set("withPhoto", withPhoto.toString());
+      router.replace(`${pathname}?${searchParams.toString()}`);
+    }
   }, [page, pageSize, ageRange, orderBy, gender, router, pathname, withPhoto]);
 
   const orderByList = [

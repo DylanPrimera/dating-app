@@ -47,10 +47,11 @@ export const getMembers = async ({
       },
     };
 
+
     const count = await prisma.member.count(membersSelection);
 
     const members = await prisma.member.findMany({
-      ...membersSelection,
+      ...membersSelection!,
       orderBy: { [orderBy]: "desc" },
       skip,
       take: limit,

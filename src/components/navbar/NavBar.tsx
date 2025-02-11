@@ -10,7 +10,7 @@ import { FiltersWrapper } from "../filters/FiltersWrapper";
 export const NavBar = async () => {
   const session = await auth();
   const userInfo = session?.user && (await getUserInfoForNav());
-  const routes = [
+  const userRoutes = [
     {
       label: "Members",
       href: "/members",
@@ -24,6 +24,15 @@ export const NavBar = async () => {
       href: "/messages",
     },
   ];
+  const adminRoutes = [
+    {
+      label: 'Moderation',
+      href: '/admin/moderation'
+    }
+  ];
+
+  const navBarRoutes = session?.user?.role === "ADMIN" ? adminRoutes : userRoutes;
+
   return (
     <>
       <nav className="w-full py-2 px-6 bg-gradient-to-r from-pink-400 via-red-400 to-pink-600">
@@ -36,7 +45,7 @@ export const NavBar = async () => {
           </div>
 
           <div className="hidden md:flex md:items-center md:gap-4">
-            {routes.map((route, index) => (
+            {navBarRoutes.map((route, index) => (
               <NavItem key={index} {...route} />
             ))}
           </div>

@@ -3,8 +3,12 @@ import { usePresenceStore } from "./usePresenceStore";
 import { Channel, Members } from "pusher-js";
 import { pusherClient } from "@/lib";
 import { updateLastActive } from "@/actions";
+import { Role } from "@prisma/client";
 
-export const usePresenceChannel = (userId?:string | null) => {
+export const usePresenceChannel = (
+  userId?: string | null,
+  isUser?: boolean | null
+) => {
   const { set, add, remove } = usePresenceStore();
   const channelRef = useRef<Channel | null>(null);
 
@@ -30,7 +34,8 @@ export const usePresenceChannel = (userId?:string | null) => {
   );
 
   useEffect(() => {
-    if(!userId) return; 
+    if (!userId) return;
+    if (userId && !isUser) return;
     if (!channelRef.current) {
       channelRef.current = pusherClient.subscribe("presence-neinter");
 

@@ -13,9 +13,10 @@ import { HeroUIProvider } from "@heroui/react";
 interface Props {
   children: React.ReactNode;
   userId: string | null;
+  isUser: boolean;
 }
 
-export const Providers: React.FC<Props> = ({ children, userId }) => {
+export const Providers: React.FC<Props> = ({ children, userId, isUser }) => {
   const isUnreadCountSet = useRef(false);
   const { updateUnreadCount } = useMessageStore();
 
@@ -27,15 +28,15 @@ export const Providers: React.FC<Props> = ({ children, userId }) => {
   );
 
   useEffect(() => {
-    if (!isUnreadCountSet.current && userId) {
+    if (!isUnreadCountSet.current && userId && isUser) {
       getUnreadMessageCount().then((count) => {
-        setUnreadCount(count);
+        setUnreadCount(count!);
       });
       isUnreadCountSet.current = true;
     }
-  }, [setUnreadCount, userId]);
+  }, [setUnreadCount, userId, isUser]);
 
-  usePresenceChannel(userId);
+  usePresenceChannel(userId, isUser);
   useNotificationChannel(userId);
   return (
     <SessionProvider>

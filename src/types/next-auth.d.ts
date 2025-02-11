@@ -4,7 +4,7 @@ import { Role } from '@prisma/client';
 declare module 'next-auth' {
     interface User {
         profileComplete: boolean;
-        role: Role;
+        role: string;
     }
 
     interface Session {
