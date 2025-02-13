@@ -20,7 +20,6 @@ export default async function RootLayout({
   const session = await auth();
   const userId = session?.user?.id || null
   const isUser = session?.user.role === 'MEMBER';
-  console.log({isUser});
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>

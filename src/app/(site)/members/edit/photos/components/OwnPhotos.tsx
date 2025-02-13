@@ -7,12 +7,15 @@ import { StarButton } from "./StarButton";
 import { DeleteButton } from "./DeleteButton";
 import { MemberImage } from "./MemberImage";
 import { deleteImage, setMainImage } from "@/actions";
+import { toast } from "sonner";
 
 interface Props {
   photos: Photo[] | null;
   editing?: boolean;
   mainImageUrl?: string | null;
 }
+
+// TODO: change the name of this component
 
 export const OwnPhotos: React.FC<Props> = ({
   photos,
@@ -33,32 +36,36 @@ export const OwnPhotos: React.FC<Props> = ({
     setIsLoading({
       isLoading: true,
       id: photo.id,
-      type: 'main'
+      type: "main",
     });
-
-    await setMainImage(photo);
-    router.refresh();
-    setIsLoading({
-      isLoading: false,
-      id: '',
-      type: ''
-    });
+    try {
+      await setMainImage(photo);
+      router.refresh();
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading({
+        isLoading: false,
+        id: "",
+        type: "",
+      });
+    }
   };
-  const onDeletePhoto = async(photo: Photo) => {
+  const onDeletePhoto = async (photo: Photo) => {
     if (photo.url === mainImageUrl) {
       return null;
     }
     setIsLoading({
       isLoading: true,
       id: photo.id,
-      type: 'delete'
+      type: "delete",
     });
     await deleteImage(photo);
     router.refresh();
     setIsLoading({
       isLoading: false,
-      id: '',
-      type: ''
+      id: "",
+      type: "",
     });
   };
   return (

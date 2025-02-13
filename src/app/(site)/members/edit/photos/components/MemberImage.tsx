@@ -3,7 +3,7 @@
 
 import { Photo } from "@prisma/client";
 import { CldImage } from "next-cloudinary";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { ImCheckmark, ImCross } from "react-icons/im";
@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components";
 import { approvePhoto, rejectPhoto } from "@/actions";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   photo: Photo | null;
@@ -21,24 +22,46 @@ export const MemberImage: React.FC<Props> = ({ photo }) => {
   const role = useRole();
   const isAdmin = role === "ADMIN";
   const router = useRouter();
+  const [loading, setLoading] = useState({
+    id: "",
+    value: false,
+  });
 
   if (!photo) return null;
 
   const approve = async (photoId: string) => {
+    setLoading({
+      id: "approve",
+      value: true,
+    });
     try {
       await approvePhoto(photoId);
       router.refresh();
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoading({
+        id: "",
+        value: false,
+      });
     }
   };
 
   const reject = async (photo: Photo) => {
+    setLoading({
+      id: "reject",
+      value: true,
+    });
     try {
       await rejectPhoto(photo);
       router.refresh();
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoading({
+        id: "",
+        value: false,
+      });
     }
   };
   return (
@@ -81,15 +104,25 @@ export const MemberImage: React.FC<Props> = ({ photo }) => {
             onClick={() => approve(photo.id)}
             color="success"
             className="w-full"
+            disabled={loading.id === "approve" && loading.value}
           >
-            <ImCheckmark size={20} />
+            {loading.id === "approve" && loading.value ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : (
+              <ImCheckmark size={20} />
+            )}
           </Button>
           <Button
             onClick={() => reject(photo)}
             color="danger"
             className="w-full"
+            disabled={loading.id === "reject" && loading.value}
           >
-            <ImCross size={20} />
+            {loading.id === "reject" && loading.value ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : (
+              <ImCross size={20} />
+            )}
           </Button>
         </div>
       )}

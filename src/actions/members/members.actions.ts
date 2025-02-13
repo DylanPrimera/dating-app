@@ -21,10 +21,10 @@ export const getMembers = async ({
   const pageNumber = parseInt(page);
   const limit = parseInt(pageSize);
   const skip = (pageNumber - 1) * limit;
-  if(gender.includes('') && gender.length===0) {
-    selectedGender = ['male', 'female'];
+  if (gender.includes("") && gender.length === 0) {
+    selectedGender = ["male", "female"];
   } else {
-    selectedGender = gender.split(',');
+    selectedGender = gender.split(",");
   }
   try {
     const membersSelection = {
@@ -46,7 +46,6 @@ export const getMembers = async ({
         },
       },
     };
-
 
     const count = await prisma.member.count(membersSelection);
 
@@ -81,12 +80,13 @@ export const getMemberById = async (id: string) => {
 };
 
 export const getMemberPhotos = async (userId: string) => {
+  const currentUserId = await getAuthUserId();
   const member = await prisma.member.findUnique({
     where: {
       userId,
     },
     select: {
-      photos: true,
+      photos: { where: currentUserId === userId ? {} : { isApproved: true } },
     },
   });
   if (!member) return null;
