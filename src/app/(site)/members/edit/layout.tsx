@@ -26,7 +26,7 @@ export default async function EditMemberLayout({
         <MemberSideBar member={member!} navLinks={navLinks}/>
       </div>
       <div className="col-span-9">
-        <Card className="w-full mt-10 h-full">{children}</Card>
+        <div className="w-full mt-10 h-full">{children}</div>
       </div>
     </div>
   );

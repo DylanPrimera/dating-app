@@ -51,7 +51,7 @@ export const MemberSideBar: React.FC<Props> = ({ member, navLinks }) => {
           )}
           {!isOnline && (
             <div className="flex items-center mt-3">
-              <p className="text-gray-400 text- ">Away</p>
+              <p className="text-gray-400 text-md">Away</p>
             </div>
           )}
         </div>

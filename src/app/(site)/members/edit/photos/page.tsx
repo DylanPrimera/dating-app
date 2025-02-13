@@ -10,6 +10,7 @@ export default async function MemberPhotosPage() {
   return (
     <CardInnerWrapper
       header="Upload Photos"
+      className="h-full w-full"
       body={
         <>
           <MemberPhotoUpload />

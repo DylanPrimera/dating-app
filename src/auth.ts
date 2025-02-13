@@ -11,7 +11,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.profileComplete = user.profileComplete;
-        token.role = user.role;
+        token.role = user.role as Role;
       }
       if (trigger === "update" && session?.name) {
         token.name = session.name;
