@@ -5,9 +5,9 @@ import React from "react";
 import { Filters } from "./Filters";
 
 export const FiltersWrapper = () => {
-  const pathName = usePathname();
+	const pathName = usePathname();
 
-  if (pathName === "/members") return <Filters />;
+	if (pathName === "/members") return <Filters />;
 
-  return null;
+	return null;
 };

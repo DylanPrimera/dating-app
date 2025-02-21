@@ -1,109 +1,111 @@
 "use server";
 
 import { auth } from "@/auth";
-import prisma from "@/lib/prisma";
-import { FiltersParams, PaginatedResponse } from "@/types";
-import { Member, Photo } from "@prisma/client";
-import { getAuthUserId } from "../auth/auth.actions";
 import { getAgeRange } from "@/lib";
+import prisma from "@/lib/prisma";
+import type { FiltersParams, PaginatedResponse } from "@/types";
+import type { Member, Photo } from "@prisma/client";
+import { getAuthUserId } from "../auth/auth.actions";
 
 export const getMembers = async ({
-  ageRange = "18,45",
-  gender = "male,female",
-  orderBy = "updated",
-  page = "1",
-  pageSize = "12",
-  withPhoto = "true",
+	ageRange = "18,45",
+	gender = "male,female",
+	orderBy = "updated",
+	page = "1",
+	pageSize = "12",
+	withPhoto = "true",
 }: FiltersParams): Promise<PaginatedResponse<Member>> => {
-  const userId = await getAuthUserId();
-  const [minDob, maxDob] = getAgeRange(ageRange);
-  let selectedGender;
-  const pageNumber = parseInt(page);
-  const limit = parseInt(pageSize);
-  const skip = (pageNumber - 1) * limit;
-  if (gender.includes("") && gender.length === 0) {
-    selectedGender = ["male", "female"];
-  } else {
-    selectedGender = gender.split(",");
-  }
-  try {
-    const membersSelection = {
-      where: {
-        AND: [
-          {
-            dateOfBirth: { gte: minDob },
-          },
-          {
-            dateOfBirth: { lte: maxDob },
-          },
-          {
-            gender: { in: selectedGender },
-          },
-          ...(withPhoto === "true" ? [{ image: { not: null } }] : []),
-        ],
-        NOT: {
-          userId,
-        },
-      },
-    };
+	const userId = await getAuthUserId();
+	const [minDob, maxDob] = getAgeRange(ageRange);
+	// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+	let selectedGender;
+	const pageNumber = Number.parseInt(page);
+	const limit = Number.parseInt(pageSize);
+	const skip = (pageNumber - 1) * limit;
+	if (gender.includes("") && gender.length === 0) {
+		selectedGender = ["male", "female"];
+	} else {
+		selectedGender = gender.split(",");
+	}
+	try {
+		const membersSelection = {
+			where: {
+				AND: [
+					{
+						dateOfBirth: { gte: minDob },
+					},
+					{
+						dateOfBirth: { lte: maxDob },
+					},
+					{
+						gender: { in: selectedGender },
+					},
+					...(withPhoto === "true" ? [{ image: { not: null } }] : []),
+				],
+				NOT: {
+					userId,
+				},
+			},
+		};
 
-    const count = await prisma.member.count(membersSelection);
+		const count = await prisma.member.count(membersSelection);
 
-    const members = await prisma.member.findMany({
-      ...membersSelection!,
-      orderBy: { [orderBy]: "desc" },
-      skip,
-      take: limit,
-    });
+		const members = await prisma.member.findMany({
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			...membersSelection!,
+			orderBy: { [orderBy]: "desc" },
+			skip,
+			take: limit,
+		});
 
-    return { items: members, totalCount: count };
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+		return { items: members, totalCount: count };
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
 };
 
 export const getMemberById = async (id: string) => {
-  const session = await auth();
-  if (!session?.user) return null;
-  try {
-    const member = await prisma.member.findUnique({
-      where: {
-        userId: id,
-      },
-    });
-    return member;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+	const session = await auth();
+	if (!session?.user) return null;
+	try {
+		const member = await prisma.member.findUnique({
+			where: {
+				userId: id,
+			},
+		});
+		return member;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
 };
 
 export const getMemberPhotos = async (userId: string) => {
-  const currentUserId = await getAuthUserId();
-  const member = await prisma.member.findUnique({
-    where: {
-      userId,
-    },
-    select: {
-      photos: { where: currentUserId === userId ? {} : { isApproved: true } },
-    },
-  });
-  if (!member) return null;
+	const currentUserId = await getAuthUserId();
+	const member = await prisma.member.findUnique({
+		where: {
+			userId,
+		},
+		select: {
+			photos: { where: currentUserId === userId ? {} : { isApproved: true } },
+		},
+	});
+	if (!member) return null;
 
-  return member.photos.map((p) => p) as Photo[];
+	return member.photos.map((p) => p) as Photo[];
 };
 
 export const updateLastActive = async () => {
-  const userId = await getAuthUserId();
+	const userId = await getAuthUserId();
 
-  try {
-    return prisma.member.update({
-      where: { userId },
-      data: { updated: new Date() },
-    });
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+	try {
+		return prisma.member.update({
+			where: { userId },
+			data: { updated: new Date() },
+		});
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
 };

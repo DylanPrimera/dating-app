@@ -1,33 +1,33 @@
-import Credentials from "next-auth/providers/credentials";
-import type { NextAuthConfig } from "next-auth";
-import { loginSchema } from "./lib/schemas/LoginSchema";
 import { compare } from "bcryptjs";
+import type { NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import { getUserByEmail } from "./actions";
+import { loginSchema } from "./lib/schemas/LoginSchema";
 
 export default {
-  providers: [
-    Credentials({
-      name: "credentials",
-      async authorize(creds) {
-        const validated = loginSchema.safeParse(creds);
+	providers: [
+		Credentials({
+			name: "credentials",
+			async authorize(creds) {
+				const validated = loginSchema.safeParse(creds);
 
-        if (validated.success) {
-          const { email, password } = validated.data;
+				if (validated.success) {
+					const { email, password } = validated.data;
 
-          const user = await getUserByEmail(email);
+					const user = await getUserByEmail(email);
 
-          if (
-            !user ||
-            !user.passwordHash ||
-            !(await compare(password, user.passwordHash))
-          )
-            return null;
+					if (
+						!user ||
+						!user.passwordHash ||
+						!(await compare(password, user.passwordHash))
+					)
+						return null;
 
-          return user;
-        }
+					return user;
+				}
 
-        return null;
-      },
-    }),
-  ],
+				return null;
+			},
+		}),
+	],
 } satisfies NextAuthConfig;
